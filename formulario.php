@@ -1110,7 +1110,7 @@ if (isset($_SESSION['campos_erro'])) {
 
                                 <div class="mb-3">
                                     <p class="text-muted">Arraste e solte seus documentos ou clique para selecionar
-                                        (máximo 5 arquivos PDF de 10MB cada)</p>
+                                        (máximo 6 arquivos PDF de 2MB por arquivo)</p>
                                 </div>
 
                                 <!-- Área de Drag & Drop -->
@@ -1279,7 +1279,7 @@ if (isset($_SESSION['campos_erro'])) {
                             <!-- Programa Gestão em Saúde (PGS) -->
                             <div class="mb-5">
                                 <h4 class="text-primary mb-3">
-                                    <i class="fas fa-heartbeat me-2"></i>Programa Gestão em Saúde (PGS)
+                                    <i class="fas fa-heartbeat me-2"></i>Questionário de perfil de candidato
                                 </h4>
 
                                 <div class="row">
@@ -1466,7 +1466,7 @@ if (isset($_SESSION['campos_erro'])) {
     const tiposDocumento = {
         'RG/CPF': 'RG e CPF',
         'DECLARACAO_DE_DISPONIBILIDADE': 'Declaração de Disponibilidade',
-        'QUESTIONARI_DE_PERFIL_DO_CANDIDATO': 'Questionario de Perfil do Candidato',
+        //'QUESTIONARIO_DE_PERFIL_DO_CANDIDATO': 'Questionario de Perfil de Candidato',
         'CURRICULO': 'Curriculo',
         'DIPLOMA': 'Diploma de Conclusão de Curso',
         'COMPROV_DE_REGISTRO': 'Comprovante de Registro',
@@ -1808,7 +1808,7 @@ if (isset($_SESSION['campos_erro'])) {
     // Áreas de formação por nível
     const areasFormacao = {
         'Técnico': [
-            'Técnico em Administração',
+            'Técnico Administrativo',
             'Técnico em Enfermagem*',
             'Técnico em Eletrotécnica',
             'Técnico em Massoterapia',
@@ -1819,15 +1819,15 @@ if (isset($_SESSION['campos_erro'])) {
             'Ciências Contábeis',
             'Ciências da Computação',
             'Ciências Econômicas',
+            'Tecnólogo em Recursos Humanos',
             'Comunicação Social/Jornalismo*',
             'Direito*',
             'Enfermagem*',
             'Fisioterapia*',
             'Medicina*',
             'Nutrição*',
-            'Pedagogia*',
+            //'Pedagogia*',
             'Psicologia*',
-            'Técnologo em Recursos Humanos*'
         ]
     };
 
@@ -1894,9 +1894,9 @@ if (isset($_SESSION['campos_erro'])) {
             'Fisioterapia*',
             'Medicina*',
             'Nutrição*',
-            'Pedagogia*',
+            //'Pedagogia*',
             'Psicologia*',
-            'Técnologo em Recursos Humanos*'
+            //'Tecnólogo em Recursos Humanos*'
         ];
 
         if (areasComRegistro.includes(areaFormacao)) {
