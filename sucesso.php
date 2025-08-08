@@ -222,7 +222,7 @@ if ($formulario) {
 
         <div class="alert alert-info">
             <i class="fas fa-info-circle me-2"></i>
-            <strong>Importante:</strong> Seus dados foram registrados em nosso sistema e não podem mais ser editados.
+            <strong>Importante:</strong> Seus dados foram registrados em nosso sistema.
         </div>
 
         <div class="d-grid gap-2">

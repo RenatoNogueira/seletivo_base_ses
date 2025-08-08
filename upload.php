@@ -21,7 +21,7 @@ $database = new Database();
 $db = $database->getConnection();
 
 $uploadDir = 'uploads/';
-$maxFiles = 7;
+$maxFiles = 8;
 $maxFileSize = 2 * 1024 * 1024; // 10MB
 
 // Verificar se o diretório de upload existe

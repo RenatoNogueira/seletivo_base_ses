@@ -1110,7 +1110,7 @@ if (isset($_SESSION['campos_erro'])) {
 
                                 <div class="mb-3">
                                     <p class="text-muted">Arraste e solte seus documentos ou clique para selecionar
-                                        (máximo 6 arquivos PDF de 2MB por arquivo)</p>
+                                        (máximo de 10MB)</p>
                                 </div>
 
                                 <!-- Área de Drag & Drop -->
@@ -1120,7 +1120,8 @@ if (isset($_SESSION['campos_erro'])) {
                                         <h5>Arraste e solte seus arquivos aqui</h5>
                                         <p class="text-muted">ou</p>
                                         <button type="button" class="btn btn-primary"
-                                            onclick="event.stopPropagation(); document.getElementById('fileInput').click()">
+                                            onclick="event.stopPropagation(); document.getElementById('fileInput').click()"
+                                            onclick="document.getElementById('fileInput').click()">
                                             <i class="fas fa-folder-open me-2"></i>Selecionar Arquivos
                                         </button>
                                         <input type="file" id="fileInput" multiple accept=".pdf" style="display: none;">
@@ -1145,14 +1146,18 @@ if (isset($_SESSION['campos_erro'])) {
                                 </div>
 
                                 <div class="form-text mt-2">
-                                    <strong>Tipos de documentos aceitos:</strong> RG, Declaração de Disponibilidade,
-                                    Curriculo, Diploma de Conclusão de Curso,
-                                    Conselho de Classe, Comprovante de Registro.
-                                    <br>
+                                    <strong>Tipos de documentos aceitos:</strong> RG, Título de Eleitor, Diploma,
+                                    Certificado, Registro Profissional, Comprovante de Residência<br>
                                     <strong>Formato:</strong> Apenas arquivos PDF | <strong>Tamanho máximo:</strong>
-                                    12MB
+                                    10MB por arquivo
                                 </div>
                             </div>
+
+
+
+
+
+
 
 
 
@@ -1272,10 +1277,11 @@ if (isset($_SESSION['campos_erro'])) {
 
 
 
+
                             <!-- Programa Gestão em Saúde (PGS) -->
                             <div class="mb-5">
                                 <h4 class="text-primary mb-3">
-                                    <i class="fas fa-heartbeat me-2"></i>Questionário de perfil de candidato
+                                    <i class="fas fa-heartbeat me-2"></i>Questionário de Perfil de Candidato
                                 </h4>
 
                                 <div class="row">
@@ -1466,7 +1472,8 @@ if (isset($_SESSION['campos_erro'])) {
         'CURRICULO': 'Curriculo',
         'DIPLOMA': 'Diploma de Conclusão de Curso',
         'COMPROV_DE_REGISTRO': 'Comprovante de Registro',
-        'CONSELHO_DE_CLASSE': 'Conselho de Classe'
+        //'CONSELHO_DE_CLASSE': 'Conselho de Classe',
+        'OUTROS': 'Outros (Experiência Profissional)'
     };
 
     // Inicializar drag & drop
@@ -1990,7 +1997,7 @@ if (isset($_SESSION['campos_erro'])) {
             }
 
             if (!confirm(
-                    'Tem certeza que deseja enviar o formulário? Após o envio, não será possível editar os dados.'
+                    'Tem certeza que deseja enviar o formulário?'
                 )) {
                 e.preventDefault();
             }
