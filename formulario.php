@@ -1120,7 +1120,7 @@ if (isset($_SESSION['campos_erro'])) {
                                         <h5>Arraste e solte seus arquivos aqui</h5>
                                         <p class="text-muted">ou</p>
                                         <button type="button" class="btn btn-primary"
-                                            onclick="document.getElementById('fileInput').click()">
+                                            onclick="event.stopPropagation(); document.getElementById('fileInput').click()">
                                             <i class="fas fa-folder-open me-2"></i>Selecionar Arquivos
                                         </button>
                                         <input type="file" id="fileInput" multiple accept=".pdf" style="display: none;">
@@ -1145,18 +1145,14 @@ if (isset($_SESSION['campos_erro'])) {
                                 </div>
 
                                 <div class="form-text mt-2">
-                                    <strong>Tipos de documentos aceitos:</strong> RG, Título de Eleitor, Diploma,
-                                    Certificado, Registro Profissional, Comprovante de Residência<br>
+                                    <strong>Tipos de documentos aceitos:</strong> RG, Declaração de Disponibilidade,
+                                    Curriculo, Diploma de Conclusão de Curso,
+                                    Conselho de Classe, Comprovante de Registro.
+                                    <br>
                                     <strong>Formato:</strong> Apenas arquivos PDF | <strong>Tamanho máximo:</strong>
-                                    10MB por arquivo
+                                    12MB
                                 </div>
                             </div>
-
-
-
-
-
-
 
 
 
