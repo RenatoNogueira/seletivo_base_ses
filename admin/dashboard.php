@@ -7,6 +7,17 @@ verificarLogin();
 
 $stats = obterEstatisticas($pdo);
 registrarLog($pdo, 'acesso_dashboard', 'Acesso ao dashboard administrativo');
+
+// Obter ano selecionado ou usar o atual
+$anoSelecionado = $_GET['ano'] ?? date('Y');
+$dadosCadastros = obterDadosCadastrosMensais($pdo, $anoSelecionado);
+$anosDisponiveis = obterAnosDisponiveis($pdo);
+
+// Preparar dados para o gráfico
+$meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dec'];
+$dadosGraficoJson = json_encode(array_values($dadosCadastros));
+$mesesJson = json_encode($meses);
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -14,7 +25,7 @@ registrarLog($pdo, 'acesso_dashboard', 'Acesso ao dashboard administrativo');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Administrativo - Seletico SES</title>
+    <title>Dashboard Administrativo - Seletivo SES</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.css" rel="stylesheet">
@@ -93,6 +104,35 @@ registrarLog($pdo, 'acesso_dashboard', 'Acesso ao dashboard administrativo');
         border-radius: 15px;
         border: none;
     }
+
+    /* Estilo para o estado de carregamento */
+    .chart-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+
+    /* Transição suave para o gráfico */
+    canvas {
+        transition: opacity 0.3s ease;
+    }
+
+    /* Estilo para dropdown ativo */
+    .dropdown-item.active {
+        font-weight: 600;
+        background-color: rgba(102, 126, 234, 0.1);
+    }
+
+    /* Melhorias para mensagens de erro */
+    .alert-danger {
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
     </style>
 </head>
 
@@ -103,9 +143,10 @@ registrarLog($pdo, 'acesso_dashboard', 'Acesso ao dashboard administrativo');
             <div class="col-md-3 col-lg-2 px-0">
                 <div class="sidebar p-3">
                     <div class="text-center mb-4">
-                        <i class="fas fa-shield-alt fa-3x mb-2"></i>
+                        <img src="../assets/images/branca.png" alt="Logo" class="img-fluid mb-3"
+                            style="max-height: 60px;" onerror="this.style.display='none'">
                         <h5>Admin Panel</h5>
-                        <small>Seletico SES</small>
+                        <small>Seletivo SES</small>
                     </div>
 
                     <nav class="nav flex-column">
@@ -115,7 +156,7 @@ registrarLog($pdo, 'acesso_dashboard', 'Acesso ao dashboard administrativo');
                         <a class="nav-link" href="usuarios.php">
                             <i class="fas fa-users me-2"></i>Usuários
                         </a>
-                        <a class="nav-link" href="formularios.php">
+                        <!-- <a class="nav-link" href="formularios.php">
                             <i class="fas fa-file-alt me-2"></i>Formulários
                         </a>
                         <a class="nav-link" href="arquivos.php">
@@ -129,7 +170,7 @@ registrarLog($pdo, 'acesso_dashboard', 'Acesso ao dashboard administrativo');
                         </a>
                         <a class="nav-link" href="logs.php">
                             <i class="fas fa-history me-2"></i>Logs
-                        </a>
+                        </a> -->
 
                         <hr class="my-3">
 
@@ -157,10 +198,10 @@ registrarLog($pdo, 'acesso_dashboard', 'Acesso ao dashboard administrativo');
                                         <i class="fas fa-user me-2"></i><?= sanitizar($_SESSION['admin_nome']) ?>
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="perfil.php"><i
-                                                    class="fas fa-user me-2"></i>Perfil</a></li>
-                                        <li><a class="dropdown-item" href="configuracoes.php"><i
-                                                    class="fas fa-cog me-2"></i>Configurações</a></li>
+                                        <!-- <li><a class="dropdown-item" href="perfil.php"><i
+                                                    class="fas fa-user me-2"></i>Perfil</a></li> -->
+                                        <!-- <li><a class="dropdown-item" href="configuracoes.php"><i
+                                                    class="fas fa-cog me-2"></i>Configurações</a></li> -->
                                         <li>
                                             <hr class="dropdown-divider">
                                         </li>
@@ -282,18 +323,39 @@ registrarLog($pdo, 'acesso_dashboard', 'Acesso ao dashboard administrativo');
                     <div class="row">
                         <div class="col-lg-8 mb-4">
                             <div class="card">
-                                <div class="card-header">
+                                <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 class="card-title mb-0">
-                                        <i class="fas fa-chart-line me-2"></i>Cadastros por Período
+                                        <i class="fas fa-chart-line me-2"></i>Cadastros por Mês
                                     </h5>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                            id="dropdownAno" data-bs-toggle="dropdown">
+                                            Ano: <?= $anoSelecionado ?>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownAno">
+                                            <?php foreach ($anosDisponiveis as $ano): ?>
+                                            <li>
+                                                <a class="dropdown-item <?= $ano == $anoSelecionado ? 'active' : '' ?>"
+                                                    href="?ano=<?= $ano ?>">
+                                                    <?= $ano ?>
+                                                </a>
+                                            </li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="chart-container">
                                         <canvas id="cadastrosChart"></canvas>
                                     </div>
                                 </div>
+                                <div class="card-footer text-muted small">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Dados atualizados em <?= date('d/m/Y H:i') ?>
+                                </div>
                             </div>
                         </div>
+
 
                         <div class="col-lg-4 mb-4">
                             <div class="card">
@@ -350,19 +412,19 @@ registrarLog($pdo, 'acesso_dashboard', 'Acesso ao dashboard administrativo');
                                             </a>
                                         </div>
                                         <div class="col-md-3 mb-3">
-                                            <a href="relatorios.php" class="btn btn-outline-success w-100">
+                                            <a href="relatorios.php" class="btn btn-outline-success w-100 disabled">
                                                 <i class="fas fa-chart-bar fa-2x d-block mb-2"></i>
                                                 Gerar Relatórios
                                             </a>
                                         </div>
                                         <div class="col-md-3 mb-3">
-                                            <a href="arquivos.php" class="btn btn-outline-warning w-100">
+                                            <a href="arquivos.php" class="btn btn-outline-warning w-100 disabled">
                                                 <i class="fas fa-folder fa-2x d-block mb-2"></i>
                                                 Ver Arquivos
                                             </a>
                                         </div>
                                         <div class="col-md-3 mb-3">
-                                            <a href="configuracoes.php" class="btn btn-outline-info w-100">
+                                            <a href="configuracoes.php" class="btn btn-outline-info w-100 disabled">
                                                 <i class="fas fa-cog fa-2x d-block mb-2"></i>
                                                 Configurações
                                             </a>
@@ -380,35 +442,156 @@ registrarLog($pdo, 'acesso_dashboard', 'Acesso ao dashboard administrativo');
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-    // Gráfico de cadastros
-    const ctx = document.getElementById('cadastrosChart').getContext('2d');
-    const cadastrosChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago'],
-            datasets: [{
-                label: 'Cadastros',
-                data: [12, 19, 3, 5, 2, 3, 10, 15],
-                borderColor: 'rgb(102, 126, 234)',
-                backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
+    document.addEventListener('DOMContentLoaded', function() {
+        // Elementos do DOM
+        const ctx = document.getElementById('cadastrosChart').getContext('2d');
+        const chartContainer = document.querySelector('.chart-container');
+        const dropdownAno = document.getElementById('dropdownAno');
+        const meses = <?= $mesesJson ?>;
+
+        // Variável para armazenar a instância do gráfico
+        let cadastrosChart;
+
+        // Função para renderizar o gráfico
+        function renderChart(data, ano) {
+            // Destruir gráfico existente se houver
+            if (cadastrosChart) {
+                cadastrosChart.destroy();
             }
+
+            // Atualizar texto do dropdown
+            dropdownAno.textContent = `Ano: ${ano}`;
+
+            // Criar novo gráfico
+            cadastrosChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: meses,
+                    datasets: [{
+                        label: 'Cadastros de Usuários',
+                        data: data,
+                        borderColor: 'rgb(102, 126, 234)',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: 'rgb(102, 126, 234)',
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            },
+                            title: {
+                                display: true,
+                                text: 'Quantidade de Cadastros'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Meses do Ano'
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
+                    }
+                }
+            });
         }
+
+        // Carregar dados iniciais
+        renderChart(<?= $dadosGraficoJson ?>, <?= $anoSelecionado ?>);
+
+        // Atualizar o gráfico quando o ano for alterado
+        document.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const ano = this.getAttribute('href').split('=')[1];
+
+                // Mostrar estado de carregamento
+                chartContainer.innerHTML = `
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary"></div>
+                    <p class="mt-2 text-muted">Carregando dados...</p>
+                </div>
+            `;
+
+                // Remover classe active de todos os itens
+                document.querySelectorAll('.dropdown-item').forEach(el => {
+                    el.classList.remove('active');
+                });
+
+                // Adicionar classe active ao item clicado
+                this.classList.add('active');
+
+                // Buscar dados via AJAX
+                fetch(`../api/cadastros_mensais.php?ano=${ano}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Erro na requisição');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (!data.success) {
+                            throw new Error(data.message);
+                        }
+
+                        // Restaurar canvas
+                        chartContainer.innerHTML = '<canvas id="cadastrosChart"></canvas>';
+
+                        // Obter novo contexto
+                        const newCtx = document.getElementById('cadastrosChart').getContext(
+                            '2d');
+
+                        // Atualizar gráfico com novos dados
+                        renderChart(data.data, data.ano);
+                    })
+                    .catch(error => {
+                        console.error('Erro:', error);
+                        chartContainer.innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            ${error.message || 'Erro ao carregar dados'}
+                        </div>
+                    `;
+
+                        // Adicionar botão para tentar novamente
+                        const retryBtn = document.createElement('button');
+                        retryBtn.className = 'btn btn-sm btn-primary mt-2';
+                        retryBtn.innerHTML =
+                            '<i class="fas fa-sync-alt me-1"></i> Tentar novamente';
+                        retryBtn.onclick = () => window.location.reload();
+                        chartContainer.querySelector('.alert').appendChild(retryBtn);
+                    });
+            });
+        });
     });
     </script>
 </body>

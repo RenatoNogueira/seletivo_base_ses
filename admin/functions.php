@@ -346,3 +346,44 @@ function obterFormulario($pdo, $formularioId)
         return false;
     }
 }
+
+
+/**
+ * Obtém dados de cadastros mensais para o gráfico
+ */
+function obterDadosCadastrosMensais($pdo, $ano = null)
+{
+    $ano = $ano ?? date('Y');
+
+    $sql = "SELECT
+                MONTH(created_at) as mes,
+                COUNT(id) as total
+            FROM usuarios
+            WHERE YEAR(created_at) = :ano
+            GROUP BY MONTH(created_at)
+            ORDER BY mes";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([':ano' => $ano]);
+
+    $dados = array_fill(1, 12, 0); // Inicializa todos os meses com 0
+
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $dados[$row['mes']] = (int)$row['total'];
+    }
+
+    return $dados;
+}
+
+/**
+ * Obtém anos disponíveis para filtro
+ */
+function obterAnosDisponiveis($pdo)
+{
+    $sql = "SELECT DISTINCT YEAR(created_at) as ano
+            FROM usuarios
+            ORDER BY ano DESC";
+
+    $stmt = $pdo->query($sql);
+    return $stmt->fetchAll(PDO::FETCH_COLUMN);
+}

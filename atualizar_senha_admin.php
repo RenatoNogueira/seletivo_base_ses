@@ -1,38 +1,32 @@
 <?php
-require_once './config/database.php';
+require_once 'config/database.php';
 
 try {
-    // Conectar ao banco
     $database = new Database();
     $pdo = $database->getConnection();
 
-    // Gerar hash da senha "admin123"
-    $senha = 'admin123';
+    $nome  = 'Administrador';
+    $email = 'admin@saude.ma.gov.br';
+    $senha = 'admin123'; // altere conforme necessário
+    $nivel = 'super_admin';
+
     $hash = password_hash($senha, PASSWORD_DEFAULT);
 
-    echo "Atualizando senha do administrador...\n";
-    echo "Senha: {$senha}\n";
-    echo "Hash: {$hash}\n\n";
+    // Verifica se o email já existe
+    $stmt = $pdo->prepare("SELECT id FROM administradores WHERE email = ?");
+    $stmt->execute([$email]);
+    $existe = $stmt->fetch();
 
-    // Atualizar no banco
-    $stmt = $pdo->prepare("UPDATE administradores SET senha = ? WHERE email = 'admin@seletico.com'");
-    $result = $stmt->execute([$hash]);
-
-    if ($result) {
-        echo "✅ Senha atualizada com sucesso!\n";
-
-        // Verificar se a senha funciona
-        $stmt = $pdo->prepare("SELECT senha FROM administradores WHERE email = 'admin@seletico.com'");
-        $stmt->execute();
-        $admin = $stmt->fetch();
-
-        if ($admin && password_verify($senha, $admin['senha'])) {
-            echo "✅ Verificação da senha: OK\n";
-        } else {
-            echo "❌ Verificação da senha: FALHOU\n";
-        }
+    if ($existe) {
+        // Atualiza senha
+        $stmt = $pdo->prepare("UPDATE administradores SET senha = ? WHERE email = ?");
+        $stmt->execute([$hash, $email]);
+        echo "✅ Senha atualizada para {$email}\n";
     } else {
-        echo "❌ Erro ao atualizar senha\n";
+        // Insere novo administrador
+        $stmt = $pdo->prepare("INSERT INTO administradores (nome, email, senha, nivel_acesso) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$nome, $email, $hash, $nivel]);
+        echo "✅ Novo administrador criado: {$email}\n";
     }
 } catch (Exception $e) {
     echo "❌ Erro: " . $e->getMessage() . "\n";

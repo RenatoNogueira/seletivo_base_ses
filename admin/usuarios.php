@@ -136,7 +136,8 @@ function formatarDadosUsuario($usuario)
             <div class="col-md-3 col-lg-2 px-0">
                 <div class="sidebar p-3">
                     <div class="text-center mb-4">
-                        <i class="fas fa-shield-alt fa-3x mb-2"></i>
+                        <img src="../assets/images/branca.png" alt="Logo" class="img-fluid mb-3"
+                            style="max-height: 60px;" onerror="this.style.display='none'">
                         <h5>Admin Panel</h5>
                         <small>Seletico SES</small>
                     </div>
@@ -148,7 +149,7 @@ function formatarDadosUsuario($usuario)
                         <a class="nav-link active" href="usuarios.php">
                             <i class="fas fa-users me-2"></i>Usuários
                         </a>
-                        <a class="nav-link" href="formularios.php">
+                        <!-- <a class="nav-link" href="formularios.php">
                             <i class="fas fa-file-alt me-2"></i>Formulários
                         </a>
                         <a class="nav-link" href="arquivos.php">
@@ -162,7 +163,7 @@ function formatarDadosUsuario($usuario)
                         </a>
                         <a class="nav-link" href="logs.php">
                             <i class="fas fa-history me-2"></i>Logs
-                        </a>
+                        </a> -->
 
                         <hr class="my-3">
 
