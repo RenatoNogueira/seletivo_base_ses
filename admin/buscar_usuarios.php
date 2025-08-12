@@ -14,66 +14,46 @@ if (!isset($_SESSION['admin_id'])) {
 header('Content-Type: application/json');
 
 try {
-    // Parâmetros de busca
+    // Parâmetros de busca com sanitização
     $filtros = [
-        'termo' => $_GET['termo'] ?? '',
-        'cidade' => $_GET['cidade'] ?? '',
-        'estado' => $_GET['estado'] ?? '',
-        'data_inicio' => $_GET['data_inicio'] ?? '',
-        'data_fim' => $_GET['data_fim'] ?? ''
+        'termo' => trim($_GET['termo'] ?? ''),
+        'cidade' => trim($_GET['cidade'] ?? ''),
+        'estado' => trim($_GET['estado'] ?? ''),
+        'data_inicio' => trim($_GET['data_inicio'] ?? ''),
+        'data_fim' => trim($_GET['data_fim'] ?? '')
     ];
 
+    // Validação dos parâmetros
     $pagina = max(1, intval($_GET['pagina'] ?? 1));
-    $limite = intval($_GET['limite'] ?? 20);
+    $limite = min(max(10, intval($_GET['limite'] ?? 20)), 100); // Limite entre 10 e 100
     $offset = ($pagina - 1) * $limite;
 
-    // Buscar usuários
+    // Buscar usuários com os filtros
     $usuarios = buscarUsuarios($pdo, $filtros, $limite, $offset);
     $totalUsuarios = contarUsuarios($pdo, $filtros);
     $totalPaginas = ceil($totalUsuarios / $limite);
 
-    // Registrar log da busca
-    $termoLog = !empty($filtros['termo']) ? "termo: '{$filtros['termo']}'" : '';
-    $cidadeLog = !empty($filtros['cidade']) ? "cidade: '{$filtros['cidade']}'" : '';
-    $estadoLog = !empty($filtros['estado']) ? "estado: '{$filtros['estado']}'" : '';
-    $filtrosLog = array_filter([$termoLog, $cidadeLog, $estadoLog]);
-    $descricaoLog = 'Busca AJAX de usuários' . (!empty($filtrosLog) ? ' com filtros: ' . implode(', ', $filtrosLog) : '');
-
-    registrarLog($pdo, 'busca_usuarios', $descricaoLog);
-
     // Preparar dados para retorno
-    $usuariosFormatados = [];
-    foreach ($usuarios as $usuario) {
-        $usuariosFormatados[] = [
-            'usuario_id' => $usuario['usuario_id'],
-            'cpf' => $usuario['cpf'],
-            'nome_completo' => $usuario['nome_completo'],
-            'email' => $usuario['email'],
-            'rg' => $usuario['rg'],
-            'estado_civil' => $usuario['estado_civil'],
-            'nacionalidade' => $usuario['nacionalidade'],
-            'telefone_fixo' => $usuario['telefone_fixo'],
-            'celular' => $usuario['celular'],
-            'email_alternativo' => $usuario['email_alternativo'],
-            'data_nascimento' => $usuario['data_nascimento'],
-            'data_cadastro' => $usuario['data_cadastro'],
-            'formulario_id' => $usuario['formulario_id'],
-            'link_video' => $usuario['link_video'],
-            'cep' => $usuario['cep'],
-            'logradouro' => $usuario['logradouro'],
-            'numero' => $usuario['numero'],
-            'complemento' => $usuario['complemento'],
-            'bairro' => $usuario['bairro'],
-            'cidade' => $usuario['cidade'],
-            'estado' => $usuario['estado'],
-            'data_envio_formulario' => $usuario['data_envio_formulario'],
-            'total_cursos' => intval($usuario['total_cursos']),
-            'total_arquivos' => intval($usuario['total_arquivos']),
-            'areas_formacao' => $usuario['areas_formacao'],
-            'registros_profissionais' => $usuario['registros_profissionais'],
-            'tipos_documentos' => $usuario['tipos_documentos']
+    $usuariosFormatados = array_map(function ($usuario) {
+        return [
+            'usuario_id' => (int)$usuario['usuario_id'],
+            'cpf' => formatarCPF($usuario['cpf']),
+            'nome_completo' => sanitizar($usuario['nome_completo']),
+            'email' => sanitizar($usuario['email']),
+            'rg' => sanitizar($usuario['rg']),
+            'data_nascimento' => $usuario['data_nascimento'] ? date('d/m/Y', strtotime($usuario['data_nascimento'])) : '-',
+            'celular' => formatarTelefone($usuario['celular']),
+            'telefone_fixo' => formatarTelefone($usuario['telefone_fixo']),
+            'cidade' => sanitizar($usuario['cidade']),
+            'estado' => sanitizar($usuario['estado']),
+            'data_cadastro' => formatarData($usuario['data_cadastro']),
+            'total_cursos' => (int)$usuario['total_cursos'],
+            'total_arquivos' => (int)$usuario['total_arquivos'],
+            'nivel' => sanitizar($usuario['nivel']),
+            'areas_formacao' => sanitizar($usuario['areas_formacao']),
+            'registros_profissionais' => sanitizar($usuario['registros_profissionais'])
         ];
-    }
+    }, $usuarios);
 
     // Retornar resposta JSON
     echo json_encode([
@@ -86,25 +66,23 @@ try {
             'limite' => $limite,
             'offset' => $offset
         ],
-        'filtros' => $filtros,
         'timestamp' => date('Y-m-d H:i:s')
     ]);
-} catch (Exception $e) {
-    // Log do erro
-    error_log("Erro na busca AJAX de usuários: " . $e->getMessage());
-
-    // Registrar log do erro
-    try {
-        registrarLog($pdo, 'erro_busca_usuarios', 'Erro na busca AJAX: ' . $e->getMessage());
-    } catch (Exception $logError) {
-        // Erro silencioso no log
-    }
-
-    // Retornar erro
+} catch (PDOException $e) {
+    error_log("Erro na busca de usuários: " . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'success' => false,
-        'message' => 'Erro interno do servidor',
+        'message' => 'Erro interno do servidor ao buscar usuários',
+        'error' => $e->getMessage(),
+        'timestamp' => date('Y-m-d H:i:s')
+    ]);
+} catch (Exception $e) {
+    error_log("Erro geral na busca: " . $e->getMessage());
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'message' => 'Erro inesperado',
         'error' => $e->getMessage(),
         'timestamp' => date('Y-m-d H:i:s')
     ]);

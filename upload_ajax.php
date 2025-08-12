@@ -2,6 +2,7 @@
 require_once 'includes/functions.php';
 require_once 'config/database.php';
 
+// Set JSON headers
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST');
@@ -9,16 +10,27 @@ header('Access-Control-Allow-Headers: Content-Type');
 
 iniciarSessao();
 
-// Verificar se usuário está logado
+// Initialize response structure
+$response = [
+    'success' => false,
+    'message' => '',
+    'files' => [],
+    'errors' => []
+];
+
+// Check if user is logged in
 if (!usuarioLogado()) {
     http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Usuário não autenticado']);
+    $response['errors'][] = 'Usuário não autenticado';
+    echo json_encode($response);
     exit;
 }
 
+// Check request method
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Método não permitido']);
+    $response['errors'][] = 'Método não permitido';
+    echo json_encode($response);
     exit;
 }
 
@@ -26,14 +38,12 @@ $database = new Database();
 $db = $database->getConnection();
 
 try {
-    $response = ['success' => true, 'files' => [], 'errors' => []];
-
-    // Verificar se há arquivos
+    // Verify files were uploaded
     if (!isset($_FILES['files']) || empty($_FILES['files']['name'][0])) {
         throw new Exception('Nenhum arquivo foi enviado');
     }
 
-    // Verificar se há tipos de documento
+    // Verify document types were specified
     if (!isset($_POST['types']) || !is_array($_POST['types'])) {
         throw new Exception('Tipos de documento não especificados');
     }
@@ -41,62 +51,62 @@ try {
     $files = $_FILES['files'];
     $types = $_POST['types'];
     $uploadDir = 'uploads/';
+    $usuarioId = $_SESSION['usuario_id'];
 
-    // Criar diretório de upload se não existir
+    // Create upload directory if it doesn't exist
     if (!file_exists($uploadDir)) {
         mkdir($uploadDir, 0755, true);
     }
 
-    // Criar diretório específico do usuário
-    $userUploadDir = $uploadDir . 'user_' . $_SESSION['usuario_id'] . '/';
+    // Create user-specific directory
+    $userUploadDir = $uploadDir . 'user_' . $usuarioId . '/';
     if (!file_exists($userUploadDir)) {
         mkdir($userUploadDir, 0755, true);
     }
 
-    // Processar cada arquivo
-    for ($i = 0; $i < count($files['name']); $i++) {
-        $fileName = $files['name'][$i];
+    // Process each file
+    foreach ($files['name'] as $i => $fileName) {
         $fileTmpName = $files['tmp_name'][$i];
         $fileSize = $files['size'][$i];
         $fileError = $files['error'][$i];
         $fileType = $files['type'][$i];
         $documentType = $types[$i] ?? '';
 
-        // Verificar se houve erro no upload
+        // Skip file if there was an upload error
         if ($fileError !== UPLOAD_ERR_OK) {
             $response['errors'][] = "Erro no upload do arquivo: $fileName";
             continue;
         }
 
-        // Verificar tipo de arquivo
+        // Validate file type (PDF only)
         if ($fileType !== 'application/pdf') {
             $response['errors'][] = "Arquivo $fileName não é um PDF válido";
             continue;
         }
 
-        // Verificar tamanho (10MB)
+        // Validate file size (10MB max)
         if ($fileSize > 10 * 1024 * 1024) {
             $response['errors'][] = "Arquivo $fileName é muito grande (máximo 10MB)";
             continue;
         }
 
-        // Verificar se tipo de documento foi especificado
+        // Validate document type was specified
         if (empty($documentType)) {
             $response['errors'][] = "Tipo de documento não especificado para: $fileName";
             continue;
         }
 
-        // Gerar nome único para o arquivo
+        // Generate unique filename
         $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
         $uniqueFileName = uniqid() . '_' . time() . '.' . $fileExtension;
         $filePath = $userUploadDir . $uniqueFileName;
 
-        // Mover arquivo para diretório de destino
+        // Move file to destination
         if (move_uploaded_file($fileTmpName, $filePath)) {
-            // Verificar se já existe um formulário para este usuário ou criar um temporário
+            // Check for existing form or create a temporary one
             $queryFormulario = "SELECT id FROM formularios WHERE usuario_id = :usuario_id ORDER BY id DESC LIMIT 1";
             $stmtFormulario = $db->prepare($queryFormulario);
-            $stmtFormulario->bindParam(':usuario_id', $_SESSION['usuario_id']);
+            $stmtFormulario->bindParam(':usuario_id', $usuarioId, PDO::PARAM_INT);
             $stmtFormulario->execute();
             $formulario = $stmtFormulario->fetch(PDO::FETCH_ASSOC);
 
@@ -104,17 +114,18 @@ try {
             if ($formulario) {
                 $formularioId = $formulario['id'];
             } else {
-                // Criar formulário temporário para armazenar os uploads
-                $queryCreateForm = "INSERT INTO formularios (usuario_id, rascunho_data) VALUES (:usuario_id, JSON_OBJECT('temp', true))";
+                // Create temporary form record
+                $queryCreateForm = "INSERT INTO formularios (usuario_id, status, rascunho_data)
+                                    VALUES (:usuario_id, 'incompleto', JSON_OBJECT('temp', true))";
                 $stmtCreateForm = $db->prepare($queryCreateForm);
-                $stmtCreateForm->bindParam(':usuario_id', $_SESSION['usuario_id']);
+                $stmtCreateForm->bindParam(':usuario_id', $usuarioId, PDO::PARAM_INT);
                 if ($stmtCreateForm->execute()) {
                     $formularioId = $db->lastInsertId();
                 }
             }
 
             if ($formularioId) {
-                // Salvar informações no banco de dados
+                // Save file info to database
                 $query = "INSERT INTO arquivos_upload (
                     formulario_id, nome_original, nome_salvo, tipo_documento,
                     tamanho, tipo_mime, caminho_arquivo, uploaded_at
@@ -124,11 +135,11 @@ try {
                 )";
 
                 $stmt = $db->prepare($query);
-                $stmt->bindParam(':formulario_id', $formularioId);
+                $stmt->bindParam(':formulario_id', $formularioId, PDO::PARAM_INT);
                 $stmt->bindParam(':nome_original', $fileName);
                 $stmt->bindParam(':nome_salvo', $uniqueFileName);
                 $stmt->bindParam(':tipo_documento', $documentType);
-                $stmt->bindParam(':tamanho', $fileSize);
+                $stmt->bindParam(':tamanho', $fileSize, PDO::PARAM_INT);
                 $stmt->bindParam(':tipo_mime', $fileType);
                 $stmt->bindParam(':caminho_arquivo', $filePath);
 
@@ -142,12 +153,12 @@ try {
                         'status' => 'success'
                     ];
                 } else {
-                    // Se falhou ao salvar no banco, remover arquivo
+                    // Remove file if database insert fails
                     unlink($filePath);
                     $response['errors'][] = "Erro ao salvar informações do arquivo: $fileName no banco de dados";
                 }
             } else {
-                // Se não conseguiu criar/encontrar formulário, remover arquivo
+                // Remove file if form creation fails
                 unlink($filePath);
                 $response['errors'][] = "Erro ao criar formulário para o arquivo: $fileName";
             }
@@ -156,7 +167,7 @@ try {
         }
     }
 
-    // Se houve erros mas também sucessos, ainda consideramos sucesso parcial
+    // Set success message if any files were uploaded
     if (!empty($response['files'])) {
         $response['success'] = true;
         $response['message'] = count($response['files']) . ' arquivo(s) enviado(s) com sucesso';
@@ -172,8 +183,8 @@ try {
     echo json_encode($response);
 } catch (Exception $e) {
     http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'message' => $e->getMessage()
-    ]);
+    $response['success'] = false;
+    $response['message'] = $e->getMessage();
+    $response['errors'][] = $e->getMessage();
+    echo json_encode($response);
 }

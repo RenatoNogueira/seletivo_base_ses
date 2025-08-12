@@ -140,13 +140,36 @@ function buscarUsuarios($pdo, $filtros = [], $limite = 20, $offset = 0)
     try {
         // Versão mais simples possível para debug
         $sql = "SELECT
-                    u.id as usuario_id,
+  u.id as usuario_id,
                     u.cpf,
                     u.nome_completo,
                     u.email,
-                    u.created_at as data_cadastro
+                    u.rg,
+                    u.estado_civil,
+                    u.nacionalidade,
+                    u.telefone_fixo,
+                    u.celular,
+                    u.email_alternativo,
+                    u.data_nascimento,
+                    u.created_at as data_cadastro,
+                    f.id as formulario_id,
+                    f.link_video,
+                    f.cep,
+                    f.logradouro,
+                    f.numero,
+                    f.complemento,
+                    f.bairro,
+                    f.cidade,
+                    f.estado,
+                    f.submitted_at as data_envio_formulario,
+                    (SELECT COUNT(*) FROM cursos_formacoes cf WHERE cf.formulario_id = f.id) as total_cursos,
+                    (SELECT COUNT(*) FROM arquivos_upload au WHERE au.formulario_id = f.id) as total_arquivos,
+                    (SELECT GROUP_CONCAT(DISTINCT cf.nivel SEPARATOR ', ') FROM cursos_formacoes cf WHERE cf.formulario_id = f.id) as nivel,
+                    (SELECT GROUP_CONCAT(DISTINCT cf.area_formacao SEPARATOR ', ') FROM cursos_formacoes cf WHERE cf.formulario_id = f.id) as areas_formacao,
+                    (SELECT GROUP_CONCAT(DISTINCT cf.registro_profissional SEPARATOR ', ') FROM cursos_formacoes cf WHERE cf.formulario_id = f.id AND cf.registro_profissional IS NOT NULL) as registros_profissionais
                 FROM usuarios u
-                ORDER BY u.created_at DESC";
+                LEFT JOIN formularios f ON u.id = f.usuario_id
+                WHERE 1=1";
 
         // Sem filtros por enquanto para debug
         $stmt = $pdo->prepare($sql);
