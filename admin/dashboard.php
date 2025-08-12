@@ -145,7 +145,7 @@ $mesesJson = json_encode($meses);
                     <div class="text-center mb-4">
                         <img src="../assets/images/branca.png" alt="Logo" class="img-fluid mb-3"
                             style="max-height: 60px;" onerror="this.style.display='none'">
-                        <h5>Admin Panel</h5>
+                        <h5>Painel Administrativo</h5>
                         <small>Seletivo SES</small>
                     </div>
 

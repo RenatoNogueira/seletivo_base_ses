@@ -62,70 +62,70 @@ function formatarDadosUsuario($usuario)
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <style>
-    .sidebar {
-        min-height: 100vh;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-    }
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
 
-    .sidebar .nav-link {
-        color: rgba(255, 255, 255, 0.8);
-        border-radius: 8px;
-        margin: 2px 0;
-        transition: all 0.3s;
-    }
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            margin: 2px 0;
+            transition: all 0.3s;
+        }
 
-    .sidebar .nav-link:hover,
-    .sidebar .nav-link.active {
-        color: white;
-        background: rgba(255, 255, 255, 0.1);
-    }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
 
-    .admin-header {
-        background: white;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        padding: 1rem 0;
-    }
+        .admin-header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+        }
 
-    .search-card {
-        border-radius: 15px;
-        border: none;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
+        .search-card {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
 
-    .user-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: bold;
-    }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
 
-    .table-hover tbody tr:hover {
-        background-color: rgba(102, 126, 234, 0.1);
-    }
+        .table-hover tbody tr:hover {
+            background-color: rgba(102, 126, 234, 0.1);
+        }
 
-    .btn-action {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.875rem;
-    }
+        .btn-action {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
 
-    .loading {
-        display: none;
-        text-align: center;
-        padding: 2rem;
-    }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
 
-    .no-results {
-        display: none;
-        text-align: center;
-        padding: 2rem;
-        color: #6c757d;
-    }
+        .no-results {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: #6c757d;
+        }
     </style>
 </head>
 
@@ -355,79 +355,79 @@ function formatarDadosUsuario($usuario)
                                                 <?php foreach ($usuarios as $usuario):
                                                     $dados = formatarDadosUsuario($usuario);
                                                 ?>
-                                                <tr>
-                                                    <td>
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="user-avatar me-3">
-                                                                <?= strtoupper(substr($dados['nome_completo'], 0, 1)) ?>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="user-avatar me-3">
+                                                                    <?= strtoupper(substr($dados['nome_completo'], 0, 1)) ?>
+                                                                </div>
+                                                                <div>
+                                                                    <strong><?= $dados['nome_completo'] ?></strong>
+                                                                    <br>
+                                                                    <small class="text-muted"><?= $dados['email'] ?></small>
+                                                                </div>
                                                             </div>
+                                                        </td>
+                                                        <td>
+                                                            <code><?= $dados['cpf'] ?></code>
+                                                            <br>
+                                                            <small
+                                                                class="text-muted"><?= $dados['data_nascimento'] ?></small>
+                                                        </td>
+                                                        <td>
                                                             <div>
-                                                                <strong><?= $dados['nome_completo'] ?></strong>
-                                                                <br>
-                                                                <small class="text-muted"><?= $dados['email'] ?></small>
+                                                                <?php if ($dados['celular']): ?>
+                                                                    <i
+                                                                        class="fas fa-mobile-alt me-1"></i><?= $dados['celular'] ?><br>
+                                                                <?php endif; ?>
+                                                                <?php if ($dados['telefone_fixo']): ?>
+                                                                    <i
+                                                                        class="fas fa-phone me-1"></i><?= $dados['telefone_fixo'] ?>
+                                                                <?php endif; ?>
                                                             </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <code><?= $dados['cpf'] ?></code>
-                                                        <br>
-                                                        <small
-                                                            class="text-muted"><?= $dados['data_nascimento'] ?></small>
-                                                    </td>
-                                                    <td>
-                                                        <div>
-                                                            <?php if ($dados['celular']): ?>
-                                                            <i
-                                                                class="fas fa-mobile-alt me-1"></i><?= $dados['celular'] ?><br>
-                                                            <?php endif; ?>
-                                                            <?php if ($dados['telefone_fixo']): ?>
-                                                            <i
-                                                                class="fas fa-phone me-1"></i><?= $dados['telefone_fixo'] ?>
-                                                            <?php endif; ?>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <?= $dados['cidade'] ?><br>
-                                                        <small class="text-muted"><?= $dados['estado'] ?></small>
-                                                    </td>
-                                                    <td>
-                                                        <?= $dados['data_cadastro'] ?>
-                                                    </td>
-                                                    <td>
-                                                        <div class="d-flex gap-1">
-                                                            <span class="badge bg-primary" title="Cursos">
-                                                                <i class="fas fa-graduation-cap"></i>
-                                                                <?= $dados['total_cursos'] ?>
-                                                            </span>
-                                                            <span class="badge bg-success" title="Arquivos">
-                                                                <i class="fas fa-file"></i>
-                                                                <?= $dados['total_arquivos'] ?>
-                                                            </span>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="btn-group" role="group">
-                                                            <button type="button"
-                                                                class="btn btn-outline-primary btn-action"
-                                                                onclick="verDetalhes(<?= $dados['usuario_id'] ?>)"
-                                                                title="Ver Detalhes">
-                                                                <i class="fas fa-eye"></i>
-                                                            </button>
-                                                            <button type="button"
-                                                                class="btn btn-outline-info btn-action"
-                                                                onclick="editarUsuario(<?= $dados['usuario_id'] ?>)"
-                                                                title="Editar">
-                                                                <i class="fas fa-edit"></i>
-                                                            </button>
-                                                            <button type="button"
-                                                                class="btn btn-outline-danger btn-action"
-                                                                onclick="excluirUsuario(<?= $dados['usuario_id'] ?>)"
-                                                                title="Excluir">
-                                                                <i class="fas fa-trash"></i>
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
+                                                        </td>
+                                                        <td>
+                                                            <?= $dados['cidade'] ?><br>
+                                                            <small class="text-muted"><?= $dados['estado'] ?></small>
+                                                        </td>
+                                                        <td>
+                                                            <?= $dados['data_cadastro'] ?>
+                                                        </td>
+                                                        <td>
+                                                            <div class="d-flex gap-1">
+                                                                <span class="badge bg-primary" title="Cursos">
+                                                                    <i class="fas fa-graduation-cap"></i>
+                                                                    <?= $dados['total_cursos'] ?>
+                                                                </span>
+                                                                <span class="badge bg-success" title="Arquivos">
+                                                                    <i class="fas fa-file"></i>
+                                                                    <?= $dados['total_arquivos'] ?>
+                                                                </span>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="btn-group" role="group">
+                                                                <button type="button"
+                                                                    class="btn btn-outline-primary btn-action"
+                                                                    onclick="verDetalhes(<?= $dados['usuario_id'] ?>)"
+                                                                    title="Ver Detalhes">
+                                                                    <i class="fas fa-eye"></i>
+                                                                </button>
+                                                                <button type="button"
+                                                                    class="btn btn-outline-info btn-action"
+                                                                    onclick="editarUsuario(<?= $dados['usuario_id'] ?>)"
+                                                                    title="Editar">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </button>
+                                                                <button type="button"
+                                                                    class="btn btn-outline-danger btn-action"
+                                                                    onclick="excluirUsuario(<?= $dados['usuario_id'] ?>)"
+                                                                    title="Excluir">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
                                                 <?php endforeach; ?>
                                             </tbody>
                                         </table>
@@ -435,36 +435,36 @@ function formatarDadosUsuario($usuario)
 
                                     <!-- Pagination -->
                                     <?php if ($totalPaginas > 1): ?>
-                                    <nav aria-label="Navegação de páginas">
-                                        <ul class="pagination justify-content-center">
-                                            <?php if ($pagina > 1): ?>
-                                            <li class="page-item">
-                                                <a class="page-link"
-                                                    href="?<?= http_build_query(array_merge($filtros, ['pagina' => $pagina - 1])) ?>">
-                                                    <i class="fas fa-chevron-left"></i>
-                                                </a>
-                                            </li>
-                                            <?php endif; ?>
+                                        <nav aria-label="Navegação de páginas">
+                                            <ul class="pagination justify-content-center">
+                                                <?php if ($pagina > 1): ?>
+                                                    <li class="page-item">
+                                                        <a class="page-link"
+                                                            href="?<?= http_build_query(array_merge($filtros, ['pagina' => $pagina - 1])) ?>">
+                                                            <i class="fas fa-chevron-left"></i>
+                                                        </a>
+                                                    </li>
+                                                <?php endif; ?>
 
-                                            <?php for ($i = max(1, $pagina - 2); $i <= min($totalPaginas, $pagina + 2); $i++): ?>
-                                            <li class="page-item <?= $i == $pagina ? 'active' : '' ?>">
-                                                <a class="page-link"
-                                                    href="?<?= http_build_query(array_merge($filtros, ['pagina' => $i])) ?>">
-                                                    <?= $i ?>
-                                                </a>
-                                            </li>
-                                            <?php endfor; ?>
+                                                <?php for ($i = max(1, $pagina - 2); $i <= min($totalPaginas, $pagina + 2); $i++): ?>
+                                                    <li class="page-item <?= $i == $pagina ? 'active' : '' ?>">
+                                                        <a class="page-link"
+                                                            href="?<?= http_build_query(array_merge($filtros, ['pagina' => $i])) ?>">
+                                                            <?= $i ?>
+                                                        </a>
+                                                    </li>
+                                                <?php endfor; ?>
 
-                                            <?php if ($pagina < $totalPaginas): ?>
-                                            <li class="page-item">
-                                                <a class="page-link"
-                                                    href="?<?= http_build_query(array_merge($filtros, ['pagina' => $pagina + 1])) ?>">
-                                                    <i class="fas fa-chevron-right"></i>
-                                                </a>
-                                            </li>
-                                            <?php endif; ?>
-                                        </ul>
-                                    </nav>
+                                                <?php if ($pagina < $totalPaginas): ?>
+                                                    <li class="page-item">
+                                                        <a class="page-link"
+                                                            href="?<?= http_build_query(array_merge($filtros, ['pagina' => $pagina + 1])) ?>">
+                                                            <i class="fas fa-chevron-right"></i>
+                                                        </a>
+                                                    </li>
+                                                <?php endif; ?>
+                                            </ul>
+                                        </nav>
                                     <?php endif; ?>
                                 </div>
                             </div>
@@ -493,77 +493,77 @@ function formatarDadosUsuario($usuario)
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script>
-    // Busca em tempo real
-    let searchTimeout;
-    $('#termo').on('input', function() {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(function() {
-            buscarUsuarios();
-        }, 500);
-    });
-
-    // Busca ao alterar filtros
-    $('#searchForm').on('submit', function(e) {
-        e.preventDefault();
-        buscarUsuarios();
-    });
-
-    function buscarUsuarios() {
-        const formData = new FormData(document.getElementById('searchForm'));
-        const params = new URLSearchParams(formData);
-
-        $('#loading').show();
-        $('#tableContainer').hide();
-        $('#noResults').hide();
-
-        fetch('buscar_usuarios.php?' + params.toString())
-            .then(response => response.json())
-            .then(data => {
-                $('#loading').hide();
-
-                if (data.success && data.usuarios.length > 0) {
-                    atualizarTabela(data.usuarios);
-                    $('#tableContainer').show();
-                } else {
-                    $('#noResults').show();
-                }
-            })
-            .catch(error => {
-                console.error('Erro na busca:', error);
-                $('#loading').hide();
-                $('#noResults').show();
-            });
-    }
-
-    function atualizarTabela(usuarios) {
-        const tbody = document.getElementById('usuariosTableBody');
-        tbody.innerHTML = '';
-
-        usuarios.forEach(usuario => {
-            const row = criarLinhaUsuario(usuario);
-            tbody.appendChild(row);
+        // Busca em tempo real
+        let searchTimeout;
+        $('#termo').on('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(function() {
+                buscarUsuarios();
+            }, 500);
         });
-    }
 
-    function criarLinhaUsuario(usuario) {
-        const dados = {
-            usuario_id: usuario.usuario_id || 0,
-            nome_completo: usuario.nome_completo || 'Nome não informado',
-            email: usuario.email || 'Email não informado',
-            cpf: formatarCPF(usuario.cpf || ''),
-            data_nascimento: usuario.data_nascimento ? new Date(usuario.data_nascimento).toLocaleDateString(
-                'pt-BR') : '-',
-            celular: usuario.celular ? formatarTelefone(usuario.celular) : '',
-            telefone_fixo: usuario.telefone_fixo ? formatarTelefone(usuario.telefone_fixo) : '',
-            cidade: usuario.cidade || '-',
-            estado: usuario.estado || '-',
-            data_cadastro: usuario.data_cadastro ? new Date(usuario.data_cadastro).toLocaleString('pt-BR') : '-',
-            total_cursos: usuario.total_cursos || 0,
-            total_arquivos: usuario.total_arquivos || 0
-        };
+        // Busca ao alterar filtros
+        $('#searchForm').on('submit', function(e) {
+            e.preventDefault();
+            buscarUsuarios();
+        });
 
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
+        function buscarUsuarios() {
+            const formData = new FormData(document.getElementById('searchForm'));
+            const params = new URLSearchParams(formData);
+
+            $('#loading').show();
+            $('#tableContainer').hide();
+            $('#noResults').hide();
+
+            fetch('buscar_usuarios.php?' + params.toString())
+                .then(response => response.json())
+                .then(data => {
+                    $('#loading').hide();
+
+                    if (data.success && data.usuarios.length > 0) {
+                        atualizarTabela(data.usuarios);
+                        $('#tableContainer').show();
+                    } else {
+                        $('#noResults').show();
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro na busca:', error);
+                    $('#loading').hide();
+                    $('#noResults').show();
+                });
+        }
+
+        function atualizarTabela(usuarios) {
+            const tbody = document.getElementById('usuariosTableBody');
+            tbody.innerHTML = '';
+
+            usuarios.forEach(usuario => {
+                const row = criarLinhaUsuario(usuario);
+                tbody.appendChild(row);
+            });
+        }
+
+        function criarLinhaUsuario(usuario) {
+            const dados = {
+                usuario_id: usuario.usuario_id || 0,
+                nome_completo: usuario.nome_completo || 'Nome não informado',
+                email: usuario.email || 'Email não informado',
+                cpf: formatarCPF(usuario.cpf || ''),
+                data_nascimento: usuario.data_nascimento ? new Date(usuario.data_nascimento).toLocaleDateString(
+                    'pt-BR') : '-',
+                celular: usuario.celular ? formatarTelefone(usuario.celular) : '',
+                telefone_fixo: usuario.telefone_fixo ? formatarTelefone(usuario.telefone_fixo) : '',
+                cidade: usuario.cidade || '-',
+                estado: usuario.estado || '-',
+                data_cadastro: usuario.data_cadastro ? new Date(usuario.data_cadastro).toLocaleString('pt-BR') : '-',
+                total_cursos: usuario.total_cursos || 0,
+                total_arquivos: usuario.total_arquivos || 0
+            };
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
             <td>
                 <div class="d-flex align-items-center">
                     <div class="user-avatar me-3">
@@ -621,79 +621,79 @@ function formatarDadosUsuario($usuario)
                 </div>
             </td>
         `;
-        return tr;
-    }
-
-    function formatarCPF(cpf) {
-        if (!cpf) return '-';
-        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-    }
-
-    function formatarTelefone(telefone) {
-        if (!telefone) return '-';
-        const clean = telefone.replace(/\D/g, '');
-        if (clean.length === 11) {
-            return clean.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-        } else if (clean.length === 10) {
-            return clean.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+            return tr;
         }
-        return telefone;
-    }
 
-    function limparFiltros() {
-        document.getElementById('searchForm').reset();
-        window.location.href = 'usuarios.php';
-    }
+        function formatarCPF(cpf) {
+            if (!cpf) return '-';
+            return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        }
 
-    function verDetalhes(usuarioId) {
-        fetch(`detalhes_usuario.php?id=${usuarioId}`)
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('detalhesContent').innerHTML = html;
-                new bootstrap.Modal(document.getElementById('detalhesModal')).show();
-            })
-            .catch(error => {
-                console.error('Erro ao carregar detalhes:', error);
-                alert('Erro ao carregar detalhes do usuário.');
-            });
-    }
+        function formatarTelefone(telefone) {
+            if (!telefone) return '-';
+            const clean = telefone.replace(/\D/g, '');
+            if (clean.length === 11) {
+                return clean.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+            } else if (clean.length === 10) {
+                return clean.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+            }
+            return telefone;
+        }
 
-    function editarUsuario(usuarioId) {
-        window.location.href = `editar_usuario.php?id=${usuarioId}`;
-    }
+        function limparFiltros() {
+            document.getElementById('searchForm').reset();
+            window.location.href = 'usuarios.php';
+        }
 
-    function excluirUsuario(usuarioId) {
-        if (confirm('Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.')) {
-            fetch('excluir_usuario.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        id: usuarioId
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Usuário excluído com sucesso!');
-                        location.reload();
-                    } else {
-                        alert('Erro ao excluir usuário: ' + data.message);
-                    }
+        function verDetalhes(usuarioId) {
+            fetch(`detalhes_usuario.php?id=${usuarioId}`)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('detalhesContent').innerHTML = html;
+                    new bootstrap.Modal(document.getElementById('detalhesModal')).show();
                 })
                 .catch(error => {
-                    console.error('Erro:', error);
-                    alert('Erro ao excluir usuário.');
+                    console.error('Erro ao carregar detalhes:', error);
+                    alert('Erro ao carregar detalhes do usuário.');
                 });
         }
-    }
 
-    function exportarDados() {
-        const formData = new FormData(document.getElementById('searchForm'));
-        const params = new URLSearchParams(formData);
-        window.open('exportar_usuarios.php?' + params.toString(), '_blank');
-    }
+        function editarUsuario(usuarioId) {
+            window.location.href = `editar_usuario.php?id=${usuarioId}`;
+        }
+
+        function excluirUsuario(usuarioId) {
+            if (confirm('Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.')) {
+                fetch('excluir_usuario.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            id: usuarioId
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Usuário excluído com sucesso!');
+                            location.reload();
+                        } else {
+                            alert('Erro ao excluir usuário: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro:', error);
+                        alert('Erro ao excluir usuário.');
+                    });
+            }
+        }
+
+        function exportarDados() {
+            const formData = new FormData(document.getElementById('searchForm'));
+            const params = new URLSearchParams(formData);
+            window.open('exportar_usuarios.php?' + params.toString(), '_blank');
+        }
     </script>
 </body>
 
