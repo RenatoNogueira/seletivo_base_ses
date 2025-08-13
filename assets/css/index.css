@@ -1,0 +1,85 @@
+ body {
+     background: #f5f6fa;
+     min-height: 100vh;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+ }
+
+ .login-card {
+     background: #fff;
+     border-radius: 8px;
+     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+     max-width: 900px;
+     width: 100%;
+     overflow: hidden;
+ }
+
+ .login-info {
+     background: #6366f1;
+     color: white;
+     padding: 2rem;
+ }
+
+ .login-info h3 {
+     font-weight: bold;
+ }
+
+ .login-info p {
+     font-size: 0.95rem;
+     opacity: 0.9;
+ }
+
+ .login-form {
+     padding: 2rem;
+ }
+
+ .form-control:focus {
+     border-color: #6366f1;
+     box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+ }
+
+ .btn-primary {
+     background-color: #6366f1;
+     border-color: #6366f1;
+ }
+
+ .btn-primary:hover {
+     background-color: #4e54c8;
+     border-color: #4e54c8;
+ }
+
+ .input-group-text {
+     background-color: #f8f9fa;
+     border-right: none;
+ }
+
+ .form-control {
+     border-left: none;
+ }
+
+ .periodo-funcionamento {
+     background-color: rgba(255, 255, 255, 0.1);
+     padding: 15px;
+     border-radius: 5px;
+     margin-top: 20px;
+     text-align: center;
+ }
+
+ .status-sistema {
+     padding: 10px;
+     border-radius: 5px;
+     margin-bottom: 15px;
+     text-align: center;
+     font-weight: bold;
+ }
+
+ .status-aberto {
+     background-color: #d4edda;
+     color: #155724;
+ }
+
+ .status-fechado {
+     background-color: #f8d7da;
+     color: #721c24;
+ }
