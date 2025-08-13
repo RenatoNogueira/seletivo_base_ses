@@ -16,7 +16,5 @@ if (isset($_SESSION['admin_id'])) {
 session_destroy();
 
 // Redirecionar para login
-header('Location: login.php?logout=1');
+header('Location: index.php?logout=1');
 exit;
-?>
-

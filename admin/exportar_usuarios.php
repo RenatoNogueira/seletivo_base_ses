@@ -11,7 +11,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 if (!isset($_SESSION['admin_id'])) {
-    header('Location: login.php');
+    header('Location: index.php');
     exit;
 }
 
