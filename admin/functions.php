@@ -9,16 +9,77 @@ function verificarLogin()
 }
 
 // Verificar nível de acesso
-function verificarNivel($nivelMinimo = 'admin')
+function verificarNivel($nivelRequerido = 'admin', bool $retornarBooleano = false)
 {
-    $niveis = ['moderador' => 1, 'admin' => 2, 'super_admin' => 3];
-    $nivelUsuario = $niveis[$_SESSION['admin_nivel']] ?? 0;
-    $nivelRequerido = $niveis[$nivelMinimo] ?? 0;
+    // Verificar se a sessão está iniciada
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        if ($retornarBooleano) return false;
+        throw new Exception('Sessão não inicializada');
+    }
 
-    if ($nivelUsuario < $nivelRequerido) {
-        header('Location: dashboard.php?erro=acesso_negado');
+    // Verificar se o nível do usuário está definido na sessão
+    if (!isset($_SESSION['admin_nivel'])) {
+        if ($retornarBooleano) return false;
+        throw new Exception('Nível de acesso não definido na sessão');
+    }
+
+    // Hierarquia de níveis de acesso
+    $niveisHierarquia = [
+        'visitante' => 0,
+        'moderador' => 1,
+        'admin' => 2,
+        'super_admin' => 3
+    ];
+
+    // Obter nível numérico do usuário atual
+    $nivelUsuario = $niveisHierarquia[$_SESSION['admin_nivel']] ?? -1;
+
+    // Se nível do usuário não existe na hierarquia
+    if ($nivelUsuario === -1) {
+        if ($retornarBooleano) return false;
+        throw new Exception('Nível de acesso do usuário é inválido');
+    }
+
+    // Tratar múltiplos níveis permitidos (array)
+    if (is_array($nivelRequerido)) {
+        $acessoPermitido = false;
+        foreach ($nivelRequerido as $nivel) {
+            if (($niveisHierarquia[$nivel] ?? -1) <= $nivelUsuario) {
+                $acessoPermitido = true;
+                break;
+            }
+        }
+    }
+    // Tratar nível único (string)
+    else {
+        $nivelMinimo = $niveisHierarquia[$nivelRequerido] ?? -1;
+        if ($nivelMinimo === -1) {
+            if ($retornarBooleano) return false;
+            throw new Exception('Nível requerido é inválido');
+        }
+        $acessoPermitido = ($nivelUsuario >= $nivelMinimo);
+    }
+
+    // Comportamento padrão (redirecionar)
+    if (!$retornarBooleano && !$acessoPermitido) {
+        // Registrar tentativa de acesso não autorizado
+        if (function_exists('registrarLog')) {
+            registrarLog(
+                $GLOBALS['pdo'] ?? null,
+                'tentativa_acesso',
+                "Tentativa de acesso não autorizado. Nível do usuário: {$_SESSION['admin_nivel']}, Nível requerido: " .
+                    (is_array($nivelRequerido) ? implode(',', $nivelRequerido) : $nivelRequerido
+                    )
+            );
+        }
+
+        http_response_code(403);
+        $_SESSION['erro_acesso'] = 'Você não tem permissão para acessar esta funcionalidade';
+        header('Location: dashboard.php');
         exit;
     }
+
+    return $acessoPermitido;
 }
 
 // Registrar log de atividade

@@ -240,9 +240,9 @@ function formatarDadosUsuario($usuario)
                                         <i class="fas fa-users me-2"></i>Lista de Usuários
                                     </h5>
                                     <div class="d-flex align-items-center">
-                                        <button class="btn btn-success btn-sm" onclick="exportarDados()">
+                                        <a href="exportar_usuarios.php" target="_blank" class="btn btn-success btn-sm">
                                             <i class="fas fa-download me-2"></i>Exportar
-                                        </button>
+                                        </a>
                                     </div>
                                 </div>
                                 <div class="card-body">
@@ -280,7 +280,7 @@ function formatarDadosUsuario($usuario)
                                                 <?php foreach ($usuarios as $usuario):
                                                     $dados = formatarDadosUsuario($usuario);
                                                 ?>
-                                                <tr>
+                                                <tr data-id="<?= $dados['usuario_id'] ?>">
                                                     <td>
                                                         <div class="d-flex align-items-center">
                                                             <div class="user-avatar me-3">
@@ -603,6 +603,10 @@ function formatarDadosUsuario($usuario)
 
                     function excluirUsuario(usuarioId) {
                         if (confirm('Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.')) {
+                            // Mostrar loading
+                            $('#loading').show();
+                            $('#tableContainer').hide();
+
                             fetch('excluir_usuario.php', {
                                     method: 'POST',
                                     headers: {
@@ -612,26 +616,35 @@ function formatarDadosUsuario($usuario)
                                         id: usuarioId
                                     })
                                 })
-                                .then(response => response.json())
+                                .then(response => {
+                                    // Verificar se a resposta é JSON válido
+                                    const contentType = response.headers.get('content-type');
+                                    if (contentType && contentType.includes('application/json')) {
+                                        return response.json();
+                                    }
+                                    return response.text().then(text => {
+                                        throw new Error(text || 'Resposta inválida do servidor');
+                                    });
+                                })
                                 .then(data => {
-                                    if (data.success) {
+                                    if (data && data.success) {
+                                        // Remover apenas a linha do usuário excluído
+                                        $('#usuariosTable').DataTable().row(`[data-id="${usuarioId}"]`).remove()
+                                            .draw();
                                         alert('Usuário excluído com sucesso!');
-                                        buscarUsuarios();
                                     } else {
-                                        alert('Erro ao excluir usuário: ' + data.message);
+                                        throw new Error(data?.message || 'Erro ao excluir usuário');
                                     }
                                 })
                                 .catch(error => {
                                     console.error('Erro:', error);
-                                    alert('Erro ao excluir usuário.');
+                                    alert('Erro ao excluir usuário: ' + error.message);
+                                })
+                                .finally(() => {
+                                    $('#loading').hide();
+                                    $('#tableContainer').show();
                                 });
                         }
-                    }
-
-                    function exportarDados() {
-                        const formData = new FormData(document.getElementById('searchForm'));
-                        const params = new URLSearchParams(formData);
-                        window.open('exportar_usuarios.php?' + params.toString(), '_blank');
                     }
                     </script>
                 </div>

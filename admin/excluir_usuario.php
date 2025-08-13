@@ -1,120 +1,146 @@
 <?php
+// Iniciar buffer para evitar saídas acidentais
+ob_start();
+
 session_start();
 require_once '../config/database.php';
 require_once 'functions.php';
 
-// Verificar se está logado
-if (!isset($_SESSION['admin_id'])) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Não autorizado']);
+// Função para enviar resposta padronizada
+function sendJsonResponse($success, $message, $data = [], $statusCode = 200)
+{
+    http_response_code($statusCode);
+    header('Content-Type: application/json');
+
+    // Limpar qualquer saída anterior
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+
+    $response = [
+        'success' => $success,
+        'message' => $message,
+        'timestamp' => date('Y-m-d H:i:s')
+    ] + $data;
+
+    echo json_encode($response);
     exit;
 }
 
-// Verificar nível de acesso (apenas super_admin pode excluir)
-verificarNivel('super_admin');
-
-// Configurar cabeçalho JSON
-header('Content-Type: application/json');
-
-// Verificar método POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Método não permitido']);
-    exit;
+// Verificar autenticação e autorização
+if (!isset($_SESSION['admin_id'])) {
+    sendJsonResponse(false, 'Não autorizado', [], 401);
 }
 
 try {
-    // Obter dados JSON
-    $input = json_decode(file_get_contents('php://input'), true);
-    $usuarioId = intval($input['id'] ?? 0);
-    
-    if (!$usuarioId) {
-        throw new Exception('ID do usuário não fornecido');
-    }
-    
-    // Verificar se o usuário existe
+    verificarNivel('super_admin');
+} catch (Exception $e) {
+    sendJsonResponse(false, $e->getMessage(), [], 403);
+}
+
+// Verificar método HTTP
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    sendJsonResponse(false, 'Método não permitido', [], 405);
+}
+
+// Verificar conteúdo JSON
+$jsonInput = file_get_contents('php://input');
+if (empty($jsonInput)) {
+    sendJsonResponse(false, 'Dados JSON não fornecidos', [], 400);
+}
+
+$input = json_decode($jsonInput, true);
+if (json_last_error() !== JSON_ERROR_NONE) {
+    sendJsonResponse(false, 'JSON inválido: ' . json_last_error_msg(), [], 400);
+}
+
+// Validar ID do usuário
+$usuarioId = filter_var($input['id'] ?? 0, FILTER_VALIDATE_INT);
+if (!$usuarioId || $usuarioId <= 0) {
+    sendJsonResponse(false, 'ID do usuário inválido', [], 400);
+}
+
+try {
+    // Verificar existência do usuário
     $stmt = $pdo->prepare("SELECT id, nome_completo FROM usuarios WHERE id = ?");
     $stmt->execute([$usuarioId]);
     $usuario = $stmt->fetch();
-    
+
     if (!$usuario) {
-        throw new Exception('Usuário não encontrado');
+        sendJsonResponse(false, 'Usuário não encontrado', [], 404);
     }
-    
+
     // Iniciar transação
     $pdo->beginTransaction();
-    
-    // Buscar formulário do usuário
+
+    // Processar formulário do usuário (se existir)
+    $formularioId = null;
     $stmt = $pdo->prepare("SELECT id FROM formularios WHERE usuario_id = ?");
     $stmt->execute([$usuarioId]);
     $formulario = $stmt->fetch();
-    
+
     if ($formulario) {
         $formularioId = $formulario['id'];
-        
+
         // Excluir arquivos físicos
         $stmt = $pdo->prepare("SELECT caminho_arquivo FROM arquivos_upload WHERE formulario_id = ?");
         $stmt->execute([$formularioId]);
         $arquivos = $stmt->fetchAll();
-        
+
+        $errosArquivos = [];
         foreach ($arquivos as $arquivo) {
-            $caminhoArquivo = $arquivo['caminho_arquivo'];
-            if (file_exists($caminhoArquivo)) {
-                unlink($caminhoArquivo);
+            if (!empty($arquivo['caminho_arquivo']) && file_exists($arquivo['caminho_arquivo'])) {
+                if (!@unlink($arquivo['caminho_arquivo'])) {
+                    $errosArquivos[] = $arquivo['caminho_arquivo'];
+                }
             }
         }
-        
+
+        if (!empty($errosArquivos)) {
+            throw new Exception('Não foi possível excluir alguns arquivos: ' . implode(', ', $errosArquivos));
+        }
+
         // Excluir registros relacionados
-        $stmt = $pdo->prepare("DELETE FROM arquivos_upload WHERE formulario_id = ?");
-        $stmt->execute([$formularioId]);
-        
-        $stmt = $pdo->prepare("DELETE FROM cursos_formacoes WHERE formulario_id = ?");
-        $stmt->execute([$formularioId]);
-        
-        $stmt = $pdo->prepare("DELETE FROM formularios WHERE id = ?");
-        $stmt->execute([$formularioId]);
+        $tabelas = ['arquivos_upload', 'cursos_formacoes', 'formularios'];
+        foreach ($tabelas as $tabela) {
+            $stmt = $pdo->prepare("DELETE FROM $tabela WHERE formulario_id = ?");
+            if (!$stmt->execute([$formularioId])) {
+                throw new Exception("Erro ao excluir da tabela $tabela");
+            }
+        }
     }
-    
+
     // Excluir usuário
     $stmt = $pdo->prepare("DELETE FROM usuarios WHERE id = ?");
-    $stmt->execute([$usuarioId]);
-    
+    if (!$stmt->execute([$usuarioId]) || $stmt->rowCount() === 0) {
+        throw new Exception('Erro ao excluir usuário');
+    }
+
     // Confirmar transação
     $pdo->commit();
-    
-    // Registrar log
-    registrarLog($pdo, 'excluir_usuario', "Usuário '{$usuario['nome_completo']}' (ID: {$usuarioId}) excluído com sucesso");
-    
-    echo json_encode([
-        'success' => true,
-        'message' => 'Usuário excluído com sucesso',
-        'usuario_id' => $usuarioId,
-        'timestamp' => date('Y-m-d H:i:s')
-    ]);
-    
+
+    // Registrar log (opcional - não interrompe o fluxo se falhar)
+    try {
+        registrarLog($pdo, 'excluir_usuario', "Usuário {$usuario['nome_completo']} (ID: $usuarioId) excluído");
+    } catch (Exception $e) {
+        error_log("Erro no log: " . $e->getMessage());
+    }
+
+    sendJsonResponse(true, 'Usuário excluído com sucesso', ['usuario_id' => $usuarioId]);
 } catch (Exception $e) {
-    // Reverter transação em caso de erro
+    // Reverter em caso de erro
     if ($pdo->inTransaction()) {
         $pdo->rollBack();
     }
-    
-    // Log do erro
-    error_log("Erro ao excluir usuário: " . $e->getMessage());
-    
-    // Registrar log do erro
-    try {
-        registrarLog($pdo, 'erro_excluir_usuario', 'Erro ao excluir usuário: ' . $e->getMessage());
-    } catch (Exception $logError) {
-        // Erro silencioso no log
-    }
-    
-    // Retornar erro
-    http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'message' => $e->getMessage(),
-        'timestamp' => date('Y-m-d H:i:s')
-    ]);
-}
-?>
 
+    // Registrar erro
+    error_log("Erro ao excluir usuário: " . $e->getMessage());
+
+    try {
+        registrarLog($pdo, 'erro_excluir_usuario', $e->getMessage());
+    } catch (Exception $logError) {
+        error_log("Erro no log de erro: " . $logError->getMessage());
+    }
+
+    sendJsonResponse(false, $e->getMessage(), [], 500);
+}

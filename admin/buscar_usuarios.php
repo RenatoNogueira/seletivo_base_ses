@@ -51,7 +51,8 @@ try {
             'total_arquivos' => (int)$usuario['total_arquivos'],
             'nivel' => sanitizar($usuario['nivel']),
             'areas_formacao' => sanitizar($usuario['areas_formacao']),
-            'registros_profissionais' => sanitizar($usuario['registros_profissionais'])
+            'registros_profissionais' => sanitizar($usuario['registros_profissionais']),
+            'tipos_documentos' => sanitizar($usuario['tipos_documentos'])
         ];
     }, $usuarios);
 

@@ -227,9 +227,9 @@ function formatarTamanho($bytes)
             <table class="table table-sm table-striped">
                 <thead>
                     <tr>
+                        <th>Nível</th>
                         <th>Área de Formação</th>
                         <th>Registro</th>
-                        <th>Instituição</th>
                         <th>Ano Conclusão</th>
                     </tr>
                 </thead>

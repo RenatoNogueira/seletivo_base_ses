@@ -15,6 +15,12 @@ $anosDisponiveis = obterAnosDisponiveis($pdo);
 
 // Preparar dados para o gráfico
 $meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dec'];
+// Verifique se os dados estão começando no mês correto
+$mesAtual = date('n') - 1; // Obtém o índice do mês atual (0-11)
+$dadosCorrigidos = array_merge(
+    array_slice($dadosCadastros, $mesAtual),
+    array_slice($dadosCadastros, 0, $mesAtual)
+);
 $dadosGraficoJson = json_encode(array_values($dadosCadastros));
 $mesesJson = json_encode($meses);
 
@@ -33,6 +39,7 @@ $mesesJson = json_encode($meses);
 </head>
 
 <body class="bg-light">
+
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
@@ -87,6 +94,7 @@ $mesesJson = json_encode($meses);
                                 <h4 class="mb-0">Dashboard Administrativo</h4>
                                 <small class="text-muted">Bem-vindo, <?= sanitizar($_SESSION['admin_nome']) ?></small>
                             </div>
+
                             <div class="col-auto">
                                 <div class="dropdown">
                                     <button class="btn btn-outline-primary dropdown-toggle" type="button"
@@ -220,20 +228,26 @@ $mesesJson = json_encode($meses);
                         <div class="col-lg-8 mb-4">
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h5 class="card-title mb-0">
-                                        <i class="fas fa-chart-line me-2"></i>Cadastros por Mês
-                                    </h5>
+                                    <div>
+                                        <h5 class="card-title mb-0">
+                                            <i class="fas fa-chart-line me-2"></i>Estatísticas de Cadastros
+                                        </h5>
+                                        <small class="text-muted">Análise mensal de usuários cadastrados</small>
+                                    </div>
                                     <div class="dropdown">
                                         <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
                                             id="dropdownAno" data-bs-toggle="dropdown">
-                                            Ano: <?= $anoSelecionado ?>
+                                            <i class="fas fa-calendar-alt me-1"></i>Ano: <?= $anoSelecionado ?>
                                         </button>
-                                        <ul class="dropdown-menu" aria-labelledby="dropdownAno">
+                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAno">
                                             <?php foreach ($anosDisponiveis as $ano): ?>
                                             <li>
                                                 <a class="dropdown-item <?= $ano == $anoSelecionado ? 'active' : '' ?>"
                                                     href="?ano=<?= $ano ?>">
-                                                    <?= $ano ?>
+                                                    <i class="fas fa-calendar me-2"></i><?= $ano ?>
+                                                    <?php if ($ano == $anoSelecionado): ?>
+                                                    <i class="fas fa-check ms-2"></i>
+                                                    <?php endif; ?>
                                                 </a>
                                             </li>
                                             <?php endforeach; ?>
@@ -241,48 +255,133 @@ $mesesJson = json_encode($meses);
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <div class="chart-container">
+                                    <div class="chart-container" style="position: relative; height: 300px;">
                                         <canvas id="cadastrosChart"></canvas>
                                     </div>
+
+                                    <!-- Resumo estatístico abaixo do gráfico -->
+                                    <div class="row mt-3">
+                                        <div class="col-md-6">
+                                            <div class="card bg-light">
+                                                <div class="card-body text-center py-2">
+                                                    <small class="text-muted">Média Mensal</small>
+                                                    <h5 class="mb-0">
+                                                        <?= number_format(array_sum($dadosCadastros) / max(1, count(array_filter($dadosCadastros)))) ?>
+                                                    </h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="card bg-light">
+                                                <div class="card-body text-center py-2">
+                                                    <small class="text-muted">Total do Ano</small>
+                                                    <h5 class="mb-0"><?= number_format(array_sum($dadosCadastros)) ?>
+                                                    </h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- <div class="col-md-4">
+                                            <div class="card bg-light">
+                                                <div class="card-body text-center py-2">
+                                                    <small class="text-muted">Mês com Mais Cadastros</small>
+                                                    <h5 class="mb-0">
+                                                        <?php
+                                                        $mesMaisCadastros = array_search(max($dadosCorrigidos), $dadosCorrigidos);
+                                                        echo $meses[$mesMaisCadastros] . ': ' . max($dadosCorrigidos);
+                                                        ?>
+                                                    </h5>
+                                                </div>
+                                            </div>
+                                        </div> -->
+                                    </div>
                                 </div>
-                                <div class="card-footer text-muted small">
-                                    <i class="fas fa-info-circle me-1"></i>
-                                    Dados atualizados em <?= date('d/m/Y H:i') ?>
+                                <div class="card-footer text-muted small d-flex justify-content-between">
+                                    <div>
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Dados atualizados em <?= date('d/m/Y') ?>
+                                    </div>
+                                    <div>
+                                        <!-- <a href="#" class="text-muted" data-bs-toggle="tooltip" title="Exportar dados">
+                                            <i class="fas fa-download me-1"></i>Exportar
+                                        </a> -->
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-
                         <div class="col-lg-4 mb-4">
-                            <div class="card">
+                            <div class="card h-100">
                                 <div class="card-header">
                                     <h5 class="card-title mb-0">
-                                        <i class="fas fa-calendar me-2"></i>Resumo Hoje
+                                        <i class="fas fa-calendar-check me-2"></i>Atividade Recente
                                     </h5>
                                 </div>
                                 <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <span>Novos Usuários</span>
-                                        <span class="badge bg-primary"><?= $stats['usuarios_hoje'] ?></span>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <span>Formulários Hoje</span>
-                                        <span class="badge bg-success"><?= $stats['formularios_hoje'] ?></span>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <span>Esta Semana</span>
-                                        <span class="badge bg-info"><?= $stats['usuarios_semana'] ?></span>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span>Este Mês</span>
-                                        <span class="badge bg-warning"><?= $stats['usuarios_mes'] ?></span>
+                                    <div class="activity-item mb-3">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <i class="fas fa-user-plus text-primary me-2"></i>
+                                                <span>Novos Usuários</span>
+                                            </div>
+                                            <span
+                                                class="badge bg-primary rounded-pill"><?= $stats['usuarios_hoje'] ?></span>
+                                        </div>
+                                        <small class="text-muted d-block mt-1">Hoje</small>
                                     </div>
 
-                                    <hr>
+                                    <div class="activity-item mb-3">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <i class="fas fa-file-alt text-success me-2"></i>
+                                                <span>Formulários</span>
+                                            </div>
+                                            <span
+                                                class="badge bg-success rounded-pill"><?= $stats['formularios_hoje'] ?></span>
+                                        </div>
+                                        <small class="text-muted d-block mt-1">Hoje</small>
+                                    </div>
+
+                                    <div class="activity-item mb-3">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <i class="fas fa-chart-line text-info me-2"></i>
+                                                <span>Esta Semana</span>
+                                            </div>
+                                            <span
+                                                class="badge bg-info rounded-pill"><?= $stats['usuarios_semana'] ?></span>
+                                        </div>
+                                        <small class="text-muted d-block mt-1">Últimos 7 dias</small>
+                                    </div>
+
+                                    <div class="activity-item mb-3">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <i class="fas fa-calendar-alt text-warning me-2"></i>
+                                                <span>Este Mês</span>
+                                            </div>
+                                            <span
+                                                class="badge bg-warning rounded-pill"><?= $stats['usuarios_mes'] ?></span>
+                                        </div>
+                                        <small class="text-muted d-block mt-1">Mês atual</small>
+                                    </div>
+
+                                    <div class="activity-item">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <i class="fas fa-users text-secondary me-2"></i>
+                                                <span>Total de Usuários</span>
+                                            </div>
+                                            <span
+                                                class="badge bg-secondary rounded-pill"><?= $stats['total_usuarios'] ?></span>
+                                        </div>
+                                        <small class="text-muted d-block mt-1">Registrados no sistema</small>
+                                    </div>
+
+                                    <hr class="my-3">
 
                                     <div class="text-center">
-                                        <a href="usuarios.php" class="btn btn-primary btn-sm">
-                                            <i class="fas fa-users me-2"></i>Ver Todos os Usuários
+                                        <a href="usuarios.php" class="btn btn-primary btn-sm me-2">
+                                            <i class="fas fa-users me-2"></i>Ver Todos
                                         </a>
                                     </div>
                                 </div>
@@ -337,6 +436,8 @@ $mesesJson = json_encode($meses);
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.0.2"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Elementos do DOM
@@ -349,16 +450,17 @@ $mesesJson = json_encode($meses);
         let cadastrosChart;
 
         // Função para renderizar o gráfico
+        // Adicione no início do script (após obter os meses):
+        const mesAtual = new Date().getMonth(); // 0-11 (Jan-Dez)
+
+        // Atualize a função renderChart para incluir a anotação:
         function renderChart(data, ano) {
-            // Destruir gráfico existente se houver
             if (cadastrosChart) {
                 cadastrosChart.destroy();
             }
 
-            // Atualizar texto do dropdown
             dropdownAno.textContent = `Ano: ${ano}`;
 
-            // Criar novo gráfico
             cadastrosChart = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -372,8 +474,12 @@ $mesesJson = json_encode($meses);
                         tension: 0.4,
                         fill: true,
                         pointBackgroundColor: 'rgb(102, 126, 234)',
-                        pointRadius: 4,
-                        pointHoverRadius: 6
+                        pointRadius: function(context) {
+                            return context.dataIndex === mesAtual ? 6 : 4;
+                        },
+                        pointHoverRadius: function(context) {
+                            return context.dataIndex === mesAtual ? 8 : 6;
+                        }
                     }]
                 },
                 options: {
@@ -389,6 +495,18 @@ $mesesJson = json_encode($meses);
                             callbacks: {
                                 label: function(context) {
                                     return `${context.dataset.label}: ${context.raw}`;
+                                }
+                            }
+                        },
+                        annotation: {
+                            annotations: {
+                                highlightMonth: {
+                                    type: 'box',
+                                    xMin: mesAtual - 0.5,
+                                    xMax: mesAtual + 0.5,
+                                    backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                                    borderColor: 'rgba(255, 99, 132, 0.5)',
+                                    borderWidth: 1
                                 }
                             }
                         }

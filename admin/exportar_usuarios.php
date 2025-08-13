@@ -137,7 +137,7 @@ try {
     }
 
     // Nome do arquivo
-    $filename = 'usuarios_seletico_' . date('Y-m-d_H-i-s') . '.xlsx';
+    $filename = 'usuarios_seletivo_2025_ses' . date('Y-m-d_H-i-s') . '.xlsx';
 
     // Download
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
