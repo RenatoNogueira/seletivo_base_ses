@@ -78,13 +78,13 @@ $indiceMesMaisCadastros = array_search(max($dadosCompleto), $dadosCompleto);
                         <a class="nav-link" href="usuarios.php">
                             <i class="fas fa-users me-2"></i>Usuários
                         </a>
+                        <a class="nav-link" href="arquivos.php" target=”_blank” rel=”noopener”>
+                            <i class="fas fa-folder me-2"></i>Arquivos
+                        </a>
                         <!-- <a class="nav-link" href="formularios.php">
                             <i class="fas fa-file-alt me-2"></i>Formulários
                         </a>
-                        <a class="nav-link" href="arquivos.php">
-                            <i class="fas fa-folder me-2"></i>Arquivos
-                        </a>
-                        <a class="nav-link" href="relatorios.php">
+                                          <a class="nav-link" href="relatorios.php">
                             <i class="fas fa-chart-bar me-2"></i>Relatórios
                         </a>
                         <a class="nav-link" href="configuracoes.php">

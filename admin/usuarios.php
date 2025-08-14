@@ -96,6 +96,9 @@ function formatarDadosUsuario($usuario)
                         <a class="nav-link active" href="usuarios.php">
                             <i class="fas fa-users me-2"></i>Usuários
                         </a>
+                        <a class="nav-link" href="arquivos.php" target=”_blank” rel=”noopener”>
+                            <i class="fas fa-folder me-2"></i>Arquivos
+                        </a>
                         <hr class="my-3">
                         <a class="nav-link" href="logout.php">
                             <i class="fas fa-sign-out-alt me-2"></i>Sair

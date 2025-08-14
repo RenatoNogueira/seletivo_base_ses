@@ -53,13 +53,27 @@ try {
     $uploadDir = 'uploads/';
     $usuarioId = $_SESSION['usuario_id'];
 
+    // Buscar o CPF do usuário no banco de dados
+    $queryCPF = "SELECT cpf FROM usuarios WHERE id = :usuario_id LIMIT 1";
+    $stmtCPF = $db->prepare($queryCPF);
+    $stmtCPF->bindParam(':usuario_id', $usuarioId, PDO::PARAM_INT);
+    $stmtCPF->execute();
+    $usuario = $stmtCPF->fetch(PDO::FETCH_ASSOC);
+
+    if (!$usuario || empty($usuario['cpf'])) {
+        throw new Exception('Não foi possível identificar o CPF do usuário');
+    }
+
+    // Remove caracteres não numéricos do CPF
+    $cpfUsuario = preg_replace('/[^0-9]/', '', $usuario['cpf']);
+
     // Create upload directory if it doesn't exist
     if (!file_exists($uploadDir)) {
         mkdir($uploadDir, 0755, true);
     }
 
-    // Create user-specific directory
-    $userUploadDir = $uploadDir . 'user_' . $usuarioId . '/';
+    // Create user-specific directory using CPF
+    $userUploadDir = $uploadDir . 'cpf_' . $cpfUsuario . '/';
     if (!file_exists($userUploadDir)) {
         mkdir($userUploadDir, 0755, true);
     }
