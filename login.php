@@ -39,7 +39,7 @@ function exibirPeriodoInscricoes($abertura, $fechamento)
     $fim = new DateTime($fechamento);
     $diasTotal = $inicio->diff($fim)->days + 1;
 
-    return "Período: " . $inicio->format('d/m/Y') . " à " . $fim->format('d/m/Y') . " ";
+    return "Período: " . $inicio->format('d/m/Y') . " à " . $fim->format('d/m/Y') . "";
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
