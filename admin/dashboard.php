@@ -10,24 +10,40 @@ registrarLog($pdo, 'acesso_dashboard', 'Acesso ao dashboard administrativo');
 
 date_default_timezone_set('America/Sao_Paulo');
 
-
 // Obter ano selecionado ou usar o atual
 $anoSelecionado = $_GET['ano'] ?? date('Y');
+
+// Puxar os dados do banco (pode retornar menos de 12 meses)
 $dadosCadastros = obterDadosCadastrosMensais($pdo, $anoSelecionado);
 $anosDisponiveis = obterAnosDisponiveis($pdo);
 
-// Preparar dados para o gráfico
+// Meses do ano
 $meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dec'];
-// Verifique se os dados estão começando no mês correto
-$mesAtual = date('n') - 1; // Obtém o índice do mês atual (0-11)
+
+// Garantir 12 meses (Janeiro = índice 0) preenchendo meses sem dados com 0
+$dadosCompleto = array_fill(0, 12, 0);
+foreach ($dadosCadastros as $mesIndex => $valor) {
+    // Ajuste se $mesIndex do banco vem de 1 a 12
+    $dadosCompleto[$mesIndex - 1] = $valor;
+}
+
+// Índice do mês atual (0 a 11)
+$mesAtual = date('n') - 1;
+
+// Rotacionar os dados para que o gráfico comece no mês atual
 $dadosCorrigidos = array_merge(
-    array_slice($dadosCadastros, $mesAtual),
-    array_slice($dadosCadastros, 0, $mesAtual)
+    array_slice($dadosCompleto, $mesAtual),
+    array_slice($dadosCompleto, 0, $mesAtual)
 );
-$dadosGraficoJson = json_encode(array_values($dadosCadastros));
+
+// Preparar dados para o gráfico
+$dadosGraficoJson = json_encode(array_values($dadosCompleto));
 $mesesJson = json_encode($meses);
 
+// Encontrar o índice do mês com mais cadastros (sem imprimir nada ainda)
+$indiceMesMaisCadastros = array_search(max($dadosCompleto), $dadosCompleto);
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -264,7 +280,7 @@ $mesesJson = json_encode($meses);
 
                                     <!-- Resumo estatístico abaixo do gráfico -->
                                     <div class="row mt-3">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="card bg-light">
                                                 <div class="card-body text-center py-2">
                                                     <small class="text-muted">Média Mensal</small>
@@ -274,7 +290,7 @@ $mesesJson = json_encode($meses);
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="card bg-light">
                                                 <div class="card-body text-center py-2">
                                                     <small class="text-muted">Total do Ano</small>
@@ -283,19 +299,21 @@ $mesesJson = json_encode($meses);
                                                 </div>
                                             </div>
                                         </div>
-                                        <!-- <div class="col-md-4">
+                                        <div class="col-md-4">
                                             <div class="card bg-light">
                                                 <div class="card-body text-center py-2">
                                                     <small class="text-muted">Mês com Mais Cadastros</small>
                                                     <h5 class="mb-0">
                                                         <?php
-                                                        $mesMaisCadastros = array_search(max($dadosCorrigidos), $dadosCorrigidos);
-                                                        echo $meses[$mesMaisCadastros] . ': ' . max($dadosCorrigidos);
+                                                        // Encontrar o índice do mês com mais cadastros no array completo
+                                                        $indiceMesMaisCadastros = array_search(max($dadosCompleto), $dadosCompleto);
+                                                        echo $meses[$indiceMesMaisCadastros] . ': ' . max($dadosCompleto);
                                                         ?>
                                                     </h5>
                                                 </div>
                                             </div>
-                                        </div> -->
+                                        </div>
+
                                     </div>
                                 </div>
                                 <div class="card-footer text-muted small d-flex justify-content-between">

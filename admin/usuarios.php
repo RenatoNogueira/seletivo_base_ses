@@ -62,13 +62,18 @@ function formatarDadosUsuario($usuario)
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciar Usuários - Admin Seletico SES</title>
+    <title>Gerenciar Usuários - Admin Seletivo SES</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="../assets/css/usuarios.css">
+    <script>
+    new DataTable('#myTable', {
+        responsive: true
+    });
+    </script>
 </head>
 
 <body class="bg-light">
@@ -81,7 +86,7 @@ function formatarDadosUsuario($usuario)
                         <img src="../assets/images/branca.png" alt="Logo" class="img-fluid mb-3"
                             style="max-height: 60px;" onerror="this.style.display='none'">
                         <h5>Painel Administrativo</h5>
-                        <small>Seletico SES</small>
+                        <small>Seletivo SES</small>
                     </div>
 
                     <nav class="nav flex-column">
