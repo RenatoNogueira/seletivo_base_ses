@@ -1,11 +1,6 @@
 <?php
 class Database
 {
-    // private $host = '192.166.254.79';
-    // private $db_name = 'seletivo_ses';
-    // private $username = 'root';
-    // private $password = 'Ses@1234';
-    // private $conn;
 
     private $host = 'localhost';
     private $db_name = 'seletivo_ses';
