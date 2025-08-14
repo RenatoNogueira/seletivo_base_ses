@@ -11,6 +11,8 @@ function safeGet($array, $key, $default = null)
     return isset($array[$key]) ? $array[$key] : $default;
 }
 
+date_default_timezone_set('America/Sao_Paulo');
+
 // Parâmetros de busca com valores padrão
 $filtros = [
     'termo' => safeGet($_GET, 'termo', ''),
@@ -280,92 +282,92 @@ function formatarDadosUsuario($usuario)
                                                 <?php foreach ($usuarios as $usuario):
                                                     $dados = formatarDadosUsuario($usuario);
                                                 ?>
-                                                    <tr data-id="<?= $dados['usuario_id'] ?>">
-                                                        <td>
-                                                            <div class="d-flex align-items-center">
-                                                                <div class="user-avatar me-3">
-                                                                    <?= strtoupper(substr($dados['nome_completo'], 0, 1)) ?>
-                                                                </div>
-                                                                <div>
-                                                                    <strong><?= $dados['nome_completo'] ?></strong>
-                                                                    <br>
-                                                                    <small class="text-muted"><?= $dados['email'] ?></small>
-                                                                </div>
+                                                <tr data-id="<?= $dados['usuario_id'] ?>">
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="user-avatar me-3">
+                                                                <?= strtoupper(substr($dados['nome_completo'], 0, 1)) ?>
                                                             </div>
-                                                        </td>
-                                                        <td>
-                                                            <code><?= $dados['cpf'] ? $dados['cpf'] : '' ?></code>
-                                                            <br>
-                                                            <small
-                                                                class="text-muted"><?= $dados['data_nascimento'] ?></small>
-                                                        </td>
-                                                        <td>
-                                                            <?php if (!$dados['celular'] && !$dados['telefone_fixo']): ?>
-                                                                -
-                                                            <?php else: ?>
-                                                                <div>
-                                                                    <?php if ($dados['celular']): ?>
-                                                                        <i
-                                                                            class="fas fa-mobile-alt me-1"></i><?= $dados['celular'] ?><br>
-                                                                    <?php endif; ?>
-                                                                    <?php if ($dados['telefone_fixo']): ?>
-                                                                        <i
-                                                                            class="fas fa-phone me-1"></i><?= $dados['telefone_fixo'] ?>
-                                                                    <?php endif; ?>
-                                                                </div>
+                                                            <div>
+                                                                <strong><?= $dados['nome_completo'] ?></strong>
+                                                                <br>
+                                                                <small class="text-muted"><?= $dados['email'] ?></small>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <code><?= $dados['cpf'] ? $dados['cpf'] : '' ?></code>
+                                                        <br>
+                                                        <small
+                                                            class="text-muted"><?= $dados['data_nascimento'] ?></small>
+                                                    </td>
+                                                    <td>
+                                                        <?php if (!$dados['celular'] && !$dados['telefone_fixo']): ?>
+                                                        -
+                                                        <?php else: ?>
+                                                        <div>
+                                                            <?php if ($dados['celular']): ?>
+                                                            <i
+                                                                class="fas fa-mobile-alt me-1"></i><?= $dados['celular'] ?><br>
                                                             <?php endif; ?>
-                                                        </td>
-                                                        <td>
-                                                            <?= $dados['cidade'] ?><br>
-                                                            <small class="text-muted"><?= $dados['estado'] ?></small>
-                                                        </td>
-                                                        <td>
-                                                            <?= $dados['data_cadastro'] ?>
-                                                        </td>
-                                                        <td>
-                                                            <div class="d-flex gap-1">
-                                                                <span class="badge bg-primary" title="Cursos">
-                                                                    <i class="fas fa-graduation-cap"></i>
-                                                                    <?= $dados['total_cursos'] ?>
-                                                                </span>
-                                                                <span class="badge bg-success" title="Arquivos">
-                                                                    <i class="fas fa-file"></i>
-                                                                    <?= $dados['total_arquivos'] ?>
-                                                                </span>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div class="truncate-text"
-                                                                title="<?= $dados['areas_formacao'] ?>">
-                                                                <strong>Nível:</strong> <?= $dados['nivel'] ?><br>
-                                                                <strong>Área:</strong> <?= $dados['areas_formacao'] ?><br>
-                                                                <strong>Registro:</strong>
-                                                                <?= $dados['registros_profissionais'] ?>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div class="btn-group" role="group">
-                                                                <button type="button"
-                                                                    class="btn btn-outline-primary btn-action"
-                                                                    onclick="verDetalhes(<?= $dados['usuario_id'] ?>)"
-                                                                    title="Ver Detalhes">
-                                                                    <i class="fas fa-eye"></i>
-                                                                </button>
-                                                                <button type="button"
-                                                                    class="btn btn-outline-info btn-action"
-                                                                    onclick="editarUsuario(<?= $dados['usuario_id'] ?>)"
-                                                                    title="Editar">
-                                                                    <i class="fas fa-edit"></i>
-                                                                </button>
-                                                                <button type="button"
-                                                                    class="btn btn-outline-danger btn-action"
-                                                                    onclick="excluirUsuario(<?= $dados['usuario_id'] ?>)"
-                                                                    title="Excluir">
-                                                                    <i class="fas fa-trash"></i>
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+                                                            <?php if ($dados['telefone_fixo']): ?>
+                                                            <i
+                                                                class="fas fa-phone me-1"></i><?= $dados['telefone_fixo'] ?>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td>
+                                                        <?= $dados['cidade'] ?><br>
+                                                        <small class="text-muted"><?= $dados['estado'] ?></small>
+                                                    </td>
+                                                    <td>
+                                                        <?= $dados['data_cadastro'] ?>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex gap-1">
+                                                            <span class="badge bg-primary" title="Cursos">
+                                                                <i class="fas fa-graduation-cap"></i>
+                                                                <?= $dados['total_cursos'] ?>
+                                                            </span>
+                                                            <span class="badge bg-success" title="Arquivos">
+                                                                <i class="fas fa-file"></i>
+                                                                <?= $dados['total_arquivos'] ?>
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="truncate-text"
+                                                            title="<?= $dados['areas_formacao'] ?>">
+                                                            <strong>Nível:</strong> <?= $dados['nivel'] ?><br>
+                                                            <strong>Área:</strong> <?= $dados['areas_formacao'] ?><br>
+                                                            <strong>Registro:</strong>
+                                                            <?= $dados['registros_profissionais'] ?>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="btn-group" role="group">
+                                                            <button type="button"
+                                                                class="btn btn-outline-primary btn-action"
+                                                                onclick="verDetalhes(<?= $dados['usuario_id'] ?>)"
+                                                                title="Ver Detalhes">
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                            <button type="button"
+                                                                class="btn btn-outline-info btn-action"
+                                                                onclick="editarUsuario(<?= $dados['usuario_id'] ?>)"
+                                                                title="Editar">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                            <button type="button"
+                                                                class="btn btn-outline-danger btn-action"
+                                                                onclick="excluirUsuario(<?= $dados['usuario_id'] ?>)"
+                                                                title="Excluir">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
                                                 <?php endforeach; ?>
                                             </tbody>
                                         </table>
@@ -384,118 +386,118 @@ function formatarDadosUsuario($usuario)
                     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
                     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
                     <script>
-                        $(document).ready(function() {
-                            // Inicializar DataTable
-                            var table = $('#usuariosTable').DataTable({
-                                language: {
-                                    url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json'
-                                },
-                                responsive: true,
-                                lengthMenu: [10, 20, 50, 100],
-                                pageLength: 20,
-                                dom: '<"top"lf>rt<"bottom"ip>',
-                                initComplete: function() {
-                                    $('#loading').hide();
-                                    $('#tableContainer').show();
-                                }
-                            });
+                    $(document).ready(function() {
+                        // Inicializar DataTable
+                        var table = $('#usuariosTable').DataTable({
+                            language: {
+                                url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json'
+                            },
+                            responsive: true,
+                            lengthMenu: [10, 20, 50, 100],
+                            pageLength: 20,
+                            dom: '<"top"lf>rt<"bottom"ip>',
+                            initComplete: function() {
+                                $('#loading').hide();
+                                $('#tableContainer').show();
+                            }
+                        });
 
-                            // Configurar buscas automáticas em campos de texto
-                            const inputFields = ['#termo', '#cidade'];
-                            inputFields.forEach(id => {
-                                $(id).on('input', function() {
-                                    clearTimeout(searchTimeout);
-                                    searchTimeout = setTimeout(() => {
-                                        buscarUsuarios();
-                                    }, 500);
-                                });
-                            });
-
-                            // Configurar buscas automáticas em campos de seleção e data
-                            const changeFields = ['#estado', '#data_inicio', '#data_fim'];
-                            changeFields.forEach(id => {
-                                $(id).on('change', () => {
+                        // Configurar buscas automáticas em campos de texto
+                        const inputFields = ['#termo', '#cidade'];
+                        inputFields.forEach(id => {
+                            $(id).on('input', function() {
+                                clearTimeout(searchTimeout);
+                                searchTimeout = setTimeout(() => {
                                     buscarUsuarios();
-                                });
+                                }, 500);
                             });
+                        });
 
-                            // Busca ao submeter o formulário
-                            $('#searchForm').on('submit', function(e) {
-                                e.preventDefault();
+                        // Configurar buscas automáticas em campos de seleção e data
+                        const changeFields = ['#estado', '#data_inicio', '#data_fim'];
+                        changeFields.forEach(id => {
+                            $(id).on('change', () => {
                                 buscarUsuarios();
                             });
                         });
 
-                        function buscarUsuarios() {
-                            const formData = new FormData(document.getElementById('searchForm'));
-                            const params = new URLSearchParams(formData);
+                        // Busca ao submeter o formulário
+                        $('#searchForm').on('submit', function(e) {
+                            e.preventDefault();
+                            buscarUsuarios();
+                        });
+                    });
 
-                            $('#loading').show();
-                            $('#tableContainer').hide();
-                            $('#noResults').hide();
+                    function buscarUsuarios() {
+                        const formData = new FormData(document.getElementById('searchForm'));
+                        const params = new URLSearchParams(formData);
 
-                            fetch('buscar_usuarios.php?' + params.toString())
-                                .then(response => response.json())
-                                .then(data => {
-                                    $('#loading').hide();
+                        $('#loading').show();
+                        $('#tableContainer').hide();
+                        $('#noResults').hide();
 
-                                    if (data.success) {
-                                        if (data.usuarios.length > 0) {
-                                            atualizarTabela(data.usuarios);
-                                            updateTotal(data.totalUsuarios);
-                                            $('#tableContainer').show();
-                                        } else {
-                                            $('#noResults').show();
-                                        }
+                        fetch('buscar_usuarios.php?' + params.toString())
+                            .then(response => response.json())
+                            .then(data => {
+                                $('#loading').hide();
+
+                                if (data.success) {
+                                    if (data.usuarios.length > 0) {
+                                        atualizarTabela(data.usuarios);
+                                        updateTotal(data.totalUsuarios);
+                                        $('#tableContainer').show();
                                     } else {
                                         $('#noResults').show();
-                                        console.error('Erro na resposta:', data.message);
                                     }
-                                })
-                                .catch(error => {
-                                    console.error('Erro na busca:', error);
-                                    $('#loading').hide();
+                                } else {
                                     $('#noResults').show();
-                                });
-                        }
+                                    console.error('Erro na resposta:', data.message);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Erro na busca:', error);
+                                $('#loading').hide();
+                                $('#noResults').show();
+                            });
+                    }
 
-                        function atualizarTabela(usuarios) {
-                            const table = $('#usuariosTable').DataTable();
-                            table.clear().draw();
+                    function atualizarTabela(usuarios) {
+                        const table = $('#usuariosTable').DataTable();
+                        table.clear().draw();
 
-                            usuarios.forEach(usuario => {
-                                const dados = {
-                                    usuario_id: usuario.usuario_id || 0,
-                                    nome_completo: usuario.nome_completo || 'Nome não informado',
-                                    email: usuario.email || 'Email não informado',
-                                    cpf: formatarCPF(usuario.cpf || ''),
-                                    data_nascimento: usuario.data_nascimento ? new Date(usuario.data_nascimento)
-                                        .toLocaleDateString('pt-BR') : '-',
-                                    celular: usuario.celular ? formatarTelefone(usuario.celular) : '',
-                                    telefone_fixo: usuario.telefone_fixo ? formatarTelefone(usuario
-                                        .telefone_fixo) : '',
-                                    cidade: usuario.cidade || '-',
-                                    estado: usuario.estado || '-',
-                                    data_cadastro: usuario.data_cadastro ? new Date(usuario.data_cadastro)
-                                        .toLocaleString('pt-BR') : '-',
-                                    total_cursos: usuario.total_cursos || 0,
-                                    total_arquivos: usuario.total_arquivos || 0,
-                                    nivel: usuario.nivel || '-',
-                                    areas_formacao: usuario.areas_formacao || '-',
-                                    registros_profissionais: usuario.registros_profissionais || '-'
-                                };
+                        usuarios.forEach(usuario => {
+                            const dados = {
+                                usuario_id: usuario.usuario_id || 0,
+                                nome_completo: usuario.nome_completo || 'Nome não informado',
+                                email: usuario.email || 'Email não informado',
+                                cpf: formatarCPF(usuario.cpf || ''),
+                                data_nascimento: usuario.data_nascimento ? new Date(usuario.data_nascimento)
+                                    .toLocaleDateString('pt-BR') : '-',
+                                celular: usuario.celular ? formatarTelefone(usuario.celular) : '',
+                                telefone_fixo: usuario.telefone_fixo ? formatarTelefone(usuario
+                                    .telefone_fixo) : '',
+                                cidade: usuario.cidade || '-',
+                                estado: usuario.estado || '-',
+                                data_cadastro: usuario.data_cadastro ? new Date(usuario.data_cadastro)
+                                    .toLocaleString('pt-BR') : '-',
+                                total_cursos: usuario.total_cursos || 0,
+                                total_arquivos: usuario.total_arquivos || 0,
+                                nivel: usuario.nivel || '-',
+                                areas_formacao: usuario.areas_formacao || '-',
+                                registros_profissionais: usuario.registros_profissionais || '-'
+                            };
 
-                                const contatoContent = (!dados.celular && !dados.telefone_fixo) ? '-' : `
+                            const contatoContent = (!dados.celular && !dados.telefone_fixo) ? '-' : `
                                 <div>
                                     ${dados.celular ? `<i class="fas fa-mobile-alt me-1"></i>${dados.celular}<br>` : ''}
                                     ${dados.telefone_fixo ? `<i class="fas fa-phone me-1"></i>${dados.telefone_fixo}` : ''}
                                 </div>
                             `;
 
-                                const cpfContent = dados.cpf ? dados.cpf : '-';
+                            const cpfContent = dados.cpf ? dados.cpf : '-';
 
-                                const rowNode = table.row.add([
-                                    `
+                            const rowNode = table.row.add([
+                                `
                                 <div class="d-flex align-items-center">
                                     <div class="user-avatar me-3">
                                         ${dados.nome_completo.charAt(0).toUpperCase()}
@@ -507,18 +509,18 @@ function formatarDadosUsuario($usuario)
                                     </div>
                                 </div>
                                 `,
-                                    `
+                                `
                                 <code>${cpfContent}</code>
                                 <br>
                                 <small class="text-muted">${dados.data_nascimento}</small>
                                 `,
-                                    contatoContent,
-                                    `
+                                contatoContent,
+                                `
                                 ${dados.cidade}<br>
                                 <small class="text-muted">${dados.estado}</small>
                                 `,
-                                    dados.data_cadastro,
-                                    `
+                                dados.data_cadastro,
+                                `
                                 <div class="d-flex gap-1">
                                     <span class="badge bg-primary" title="Cursos">
                                         <i class="fas fa-graduation-cap"></i> ${dados.total_cursos}
@@ -528,14 +530,14 @@ function formatarDadosUsuario($usuario)
                                     </span>
                                 </div>
                                 `,
-                                    `
+                                `
                                 <div class="truncate-text" title="${dados.areas_formacao}">
                                     <strong>Nível:</strong> ${dados.nivel}<br>
                                     <strong>Área:</strong> ${dados.areas_formacao}<br>
                                     <strong>Registro:</strong> ${dados.registros_profissionais}
                                 </div>
                                 `,
-                                    `
+                                `
                                 <div class="btn-group" role="group">
                                     <button type="button" class="btn btn-outline-primary btn-action"
                                             onclick="verDetalhes(${dados.usuario_id})" title="Ver Detalhes">
@@ -551,101 +553,101 @@ function formatarDadosUsuario($usuario)
                                     </button>
                                 </div>
                                 `
-                                ]).draw(false).node();
+                            ]).draw(false).node();
+                        });
+                    }
+
+                    function updateTotal(total) {
+                        const totalSpan = document.getElementById('totalUsuariosSpan');
+                        if (totalSpan) {
+                            totalSpan.innerHTML =
+                                `<i class="fas fa-info-circle me-1"></i> ${total.toLocaleString('pt-BR')} usuário(s) encontrado(s)`;
+                        }
+                    }
+
+                    function formatarCPF(cpf) {
+                        if (!cpf) return '';
+                        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+                    }
+
+                    function formatarTelefone(telefone) {
+                        if (!telefone) return '';
+                        const clean = telefone.replace(/\D/g, '');
+                        if (clean.length === 11) {
+                            return clean.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                        } else if (clean.length === 10) {
+                            return clean.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+                        }
+                        return telefone;
+                    }
+
+                    function limparFiltros() {
+                        document.getElementById('searchForm').reset();
+                        buscarUsuarios();
+                    }
+
+                    function verDetalhes(usuarioId) {
+                        fetch(`detalhes_usuario.php?id=${usuarioId}`)
+                            .then(response => response.text())
+                            .then(html => {
+                                document.getElementById('detalhesContent').innerHTML = html;
+                                new bootstrap.Modal(document.getElementById('detalhesModal')).show();
+                            })
+                            .catch(error => {
+                                console.error('Erro ao carregar detalhes:', error);
+                                alert('Erro ao carregar detalhes do usuário.');
                             });
-                        }
+                    }
 
-                        function updateTotal(total) {
-                            const totalSpan = document.getElementById('totalUsuariosSpan');
-                            if (totalSpan) {
-                                totalSpan.innerHTML =
-                                    `<i class="fas fa-info-circle me-1"></i> ${total.toLocaleString('pt-BR')} usuário(s) encontrado(s)`;
-                            }
-                        }
+                    function editarUsuario(usuarioId) {
+                        window.location.href = `editar_usuario.php?id=${usuarioId}`;
+                    }
 
-                        function formatarCPF(cpf) {
-                            if (!cpf) return '';
-                            return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-                        }
+                    function excluirUsuario(usuarioId) {
+                        if (confirm('Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.')) {
+                            // Mostrar loading
+                            $('#loading').show();
+                            $('#tableContainer').hide();
 
-                        function formatarTelefone(telefone) {
-                            if (!telefone) return '';
-                            const clean = telefone.replace(/\D/g, '');
-                            if (clean.length === 11) {
-                                return clean.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-                            } else if (clean.length === 10) {
-                                return clean.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
-                            }
-                            return telefone;
-                        }
-
-                        function limparFiltros() {
-                            document.getElementById('searchForm').reset();
-                            buscarUsuarios();
-                        }
-
-                        function verDetalhes(usuarioId) {
-                            fetch(`detalhes_usuario.php?id=${usuarioId}`)
-                                .then(response => response.text())
-                                .then(html => {
-                                    document.getElementById('detalhesContent').innerHTML = html;
-                                    new bootstrap.Modal(document.getElementById('detalhesModal')).show();
+                            fetch('excluir_usuario.php', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        id: usuarioId
+                                    })
+                                })
+                                .then(response => {
+                                    // Verificar se a resposta é JSON válido
+                                    const contentType = response.headers.get('content-type');
+                                    if (contentType && contentType.includes('application/json')) {
+                                        return response.json();
+                                    }
+                                    return response.text().then(text => {
+                                        throw new Error(text || 'Resposta inválida do servidor');
+                                    });
+                                })
+                                .then(data => {
+                                    if (data && data.success) {
+                                        // Remover apenas a linha do usuário excluído
+                                        $('#usuariosTable').DataTable().row(`[data-id="${usuarioId}"]`).remove()
+                                            .draw();
+                                        alert('Usuário excluído com sucesso!');
+                                    } else {
+                                        throw new Error(data?.message || 'Erro ao excluir usuário');
+                                    }
                                 })
                                 .catch(error => {
-                                    console.error('Erro ao carregar detalhes:', error);
-                                    alert('Erro ao carregar detalhes do usuário.');
+                                    console.error('Erro:', error);
+                                    alert('Erro ao excluir usuário: ' + error.message);
+                                })
+                                .finally(() => {
+                                    $('#loading').hide();
+                                    $('#tableContainer').show();
                                 });
                         }
-
-                        function editarUsuario(usuarioId) {
-                            window.location.href = `editar_usuario.php?id=${usuarioId}`;
-                        }
-
-                        function excluirUsuario(usuarioId) {
-                            if (confirm('Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.')) {
-                                // Mostrar loading
-                                $('#loading').show();
-                                $('#tableContainer').hide();
-
-                                fetch('excluir_usuario.php', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                        },
-                                        body: JSON.stringify({
-                                            id: usuarioId
-                                        })
-                                    })
-                                    .then(response => {
-                                        // Verificar se a resposta é JSON válido
-                                        const contentType = response.headers.get('content-type');
-                                        if (contentType && contentType.includes('application/json')) {
-                                            return response.json();
-                                        }
-                                        return response.text().then(text => {
-                                            throw new Error(text || 'Resposta inválida do servidor');
-                                        });
-                                    })
-                                    .then(data => {
-                                        if (data && data.success) {
-                                            // Remover apenas a linha do usuário excluído
-                                            $('#usuariosTable').DataTable().row(`[data-id="${usuarioId}"]`).remove()
-                                                .draw();
-                                            alert('Usuário excluído com sucesso!');
-                                        } else {
-                                            throw new Error(data?.message || 'Erro ao excluir usuário');
-                                        }
-                                    })
-                                    .catch(error => {
-                                        console.error('Erro:', error);
-                                        alert('Erro ao excluir usuário: ' + error.message);
-                                    })
-                                    .finally(() => {
-                                        $('#loading').hide();
-                                        $('#tableContainer').show();
-                                    });
-                            }
-                        }
+                    }
                     </script>
                 </div>
             </div>

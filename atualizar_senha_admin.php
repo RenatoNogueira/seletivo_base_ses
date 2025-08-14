@@ -6,8 +6,8 @@ try {
     $pdo = $database->getConnection();
 
     $nome  = 'Administrador';
-    $email = 'admin@saude.ma.gov.br';
-    $senha = 'admin123'; // altere conforme necessário
+    $email = 'paulo.vitor@saude.ma.gov.br';
+    $senha = 'paulo@vitor'; // altere conforme necessário
     $nivel = 'super_admin';
 
     $hash = password_hash($senha, PASSWORD_DEFAULT);

@@ -98,13 +98,17 @@ try {
         }
 
         // Excluir registros relacionados
-        $tabelas = ['arquivos_upload', 'cursos_formacoes', 'formularios'];
-        foreach ($tabelas as $tabela) {
-            $stmt = $pdo->prepare("DELETE FROM $tabela WHERE formulario_id = ?");
-            if (!$stmt->execute([$formularioId])) {
-                throw new Exception("Erro ao excluir da tabela $tabela");
-            }
-        }
+        // Excluir arquivos_upload
+        $stmt = $pdo->prepare("DELETE FROM arquivos_upload WHERE formulario_id = ?");
+        $stmt->execute([$formularioId]);
+
+        // Excluir cursos_formacoes
+        $stmt = $pdo->prepare("DELETE FROM cursos_formacoes WHERE formulario_id = ?");
+        $stmt->execute([$formularioId]);
+
+        // Excluir o próprio formulário
+        $stmt = $pdo->prepare("DELETE FROM formularios WHERE id = ?");
+        $stmt->execute([$formularioId]);
     }
 
     // Excluir usuário

@@ -8,6 +8,9 @@ verificarLogin();
 $stats = obterEstatisticas($pdo);
 registrarLog($pdo, 'acesso_dashboard', 'Acesso ao dashboard administrativo');
 
+date_default_timezone_set('America/Sao_Paulo');
+
+
 // Obter ano selecionado ou usar o atual
 $anoSelecionado = $_GET['ano'] ?? date('Y');
 $dadosCadastros = obterDadosCadastrosMensais($pdo, $anoSelecionado);
@@ -298,7 +301,7 @@ $mesesJson = json_encode($meses);
                                 <div class="card-footer text-muted small d-flex justify-content-between">
                                     <div>
                                         <i class="fas fa-info-circle me-1"></i>
-                                        Dados atualizados em <?= date('d/m/Y') ?>
+                                        Dados atualizados em <?= date('d/m/Y H:i:s') ?>
                                     </div>
                                     <div>
                                         <!-- <a href="#" class="text-muted" data-bs-toggle="tooltip" title="Exportar dados">
@@ -390,7 +393,7 @@ $mesesJson = json_encode($meses);
                     </div>
 
                     <!-- Quick Actions -->
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
@@ -428,7 +431,7 @@ $mesesJson = json_encode($meses);
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

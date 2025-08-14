@@ -4,14 +4,27 @@ require_once 'config/database.php';
 
 iniciarSessao();
 
+date_default_timezone_set('America/Sao_Paulo'); // Força fuso horário do Brasil
+
 $erro = '';
 
 // Configurações de período de funcionamento
-$dataAbertura = '2025-08-08';  // Data de abertura do formulário
-$dataFechamento = '2025-08-13'; // Data de fechamento do formulário
+$dataAbertura = '2025-08-11';  // Data de abertura do formulário
+$dataFechamento = '2025-08-14'; // Data de fechamento do formulário
 
 // Verificar status atual
-$dataAtual = date('Y-m-d');
+// Captura hora do computador do usuário se enviada
+if (!empty($_POST['hora_local_usuario'])) {
+    try {
+        $dataUsuario = new DateTime($_POST['hora_local_usuario'], new DateTimeZone('UTC'));
+        $dataUsuario->setTimezone(new DateTimeZone('America/Sao_Paulo'));
+        $dataAtual = $dataUsuario->format('Y-m-d');
+    } catch (Exception $e) {
+        $dataAtual = date('Y-m-d'); // fallback para servidor
+    }
+} else {
+    $dataAtual = date('Y-m-d'); // fallback para servidor
+}
 $formularioAberto = ($dataAtual >= $dataAbertura && $dataAtual <= $dataFechamento);
 
 function gerarHashId($id)

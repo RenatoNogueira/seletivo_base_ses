@@ -2,6 +2,8 @@
 require_once '../config/database.php';
 require_once 'functions.php';
 
+date_default_timezone_set('America/Sao_Paulo');
+
 // Verificar se está logado como admin
 session_start();
 if (!isset($_SESSION['admin_id'])) {

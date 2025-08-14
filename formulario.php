@@ -1,6 +1,8 @@
 <?php
 require_once 'functions/formulario_funcao.php';
 require_once 'includes/parts/header.php';
+
+date_default_timezone_set('America/Sao_Paulo');
 ?>
 
 <body>
@@ -398,7 +400,7 @@ require_once 'includes/parts/header.php';
                         </div>
 
                         <!-- Lista de Arquivos Selecionados -->
-                        <div id="filesList" class="files-list">
+                        <div id="filesList">
                             <!-- Arquivos aparecerão aqui -->
                         </div>
 

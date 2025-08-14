@@ -9,6 +9,8 @@ if (!usuarioLogado()) {
     redirecionar('index.php');
 }
 
+date_default_timezone_set('America/Sao_Paulo');
+
 // Obter dados do usuário e formulário
 $database = new Database();
 $db = $database->getConnection();
