@@ -396,12 +396,12 @@ $totalArquivos = $pdo->query("SELECT COUNT(*) FROM arquivos_upload")->fetchColum
                                         <span class="badge bg-primary rounded-pill me-2">
                                             <i class="bi bi-file-earmark me-1"></i> <?= $usuario['total_arquivos'] ?>
                                         </span>
-                                        <?php if ($usuario['tipos_documentos']): ?>
+                                        <!-- <?php if ($usuario['tipos_documentos']): ?>
                                         <span class="badge bg-info rounded-pill">
                                             <i class="bi bi-tags me-1"></i>
                                             <?= highlightSearchTerm(htmlspecialchars($usuario['tipos_documentos']), $searchTerm) ?>
                                         </span>
-                                        <?php endif; ?>
+                                        <?php endif; ?> -->
                                     </div>
                                 </div>
                             </button>
@@ -557,7 +557,7 @@ $totalArquivos = $pdo->query("SELECT COUNT(*) FROM arquivos_upload")->fetchColum
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                    <a href="#" id="downloadPreview" class="btn btn-primary">
+                    <a href="#" id="downloadPreview" class="btn btn-primary" target="_blank" rel="noopener">
                         <i class="bi bi-download me-1"></i> Baixar
                     </a>
                 </div>
