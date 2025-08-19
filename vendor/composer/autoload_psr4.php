@@ -6,26 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'ZipStream\\' => array($vendorDir . '/maennchen/zipstream-php/src'),
-    'Twilio\\' => array($vendorDir . '/twilio/sdk/src/Twilio'),
-    'Psr\\SimpleCache\\' => array($vendorDir . '/psr/simple-cache/src'),
-    'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-factory/src', $vendorDir . '/psr/http-message/src'),
-    'Psr\\Http\\Client\\' => array($vendorDir . '/psr/http-client/src'),
-    'PragmaRX\\Google2FA\\' => array($vendorDir . '/pragmarx/google2fa/src'),
-    'PhpOffice\\PhpSpreadsheet\\' => array($vendorDir . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet'),
-    'ParagonIE\\ConstantTime\\' => array($vendorDir . '/paragonie/constant_time_encoding/src'),
-    'Matrix\\' => array($vendorDir . '/markbaker/matrix/classes/src'),
-    'Composer\\Pcre\\' => array($vendorDir . '/composer/pcre/src'),
-    'Complex\\' => array($vendorDir . '/markbaker/complex/classes/src'),
-    'Com\\Tecnick\\Unicode\\Data\\' => array($vendorDir . '/tecnickcom/tc-lib-unicode-data/src'),
-    'Com\\Tecnick\\Unicode\\' => array($vendorDir . '/tecnickcom/tc-lib-unicode/src'),
-    'Com\\Tecnick\\Pdf\\Page\\' => array($vendorDir . '/tecnickcom/tc-lib-pdf-page/src'),
-    'Com\\Tecnick\\Pdf\\Image\\' => array($vendorDir . '/tecnickcom/tc-lib-pdf-image/src'),
-    'Com\\Tecnick\\Pdf\\Graph\\' => array($vendorDir . '/tecnickcom/tc-lib-pdf-graph/src'),
-    'Com\\Tecnick\\Pdf\\Font\\' => array($vendorDir . '/tecnickcom/tc-lib-pdf-font/src'),
-    'Com\\Tecnick\\Pdf\\Encrypt\\' => array($vendorDir . '/tecnickcom/tc-lib-pdf-encrypt/src'),
-    'Com\\Tecnick\\Pdf\\' => array($vendorDir . '/tecnickcom/tc-lib-pdf/src'),
-    'Com\\Tecnick\\File\\' => array($vendorDir . '/tecnickcom/tc-lib-file/src'),
-    'Com\\Tecnick\\Color\\' => array($vendorDir . '/tecnickcom/tc-lib-color/src'),
-    'Com\\Tecnick\\Barcode\\' => array($vendorDir . '/tecnickcom/tc-lib-barcode/src'),
+    'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
 );

@@ -227,6 +227,12 @@ if ($formulario) {
             <strong>Importante:</strong> Seus dados foram registrados em nosso sistema.
         </div>
 
+        <!-- <div class="alert alert-success mt-3">
+            <i class="fas fa-envelope me-2"></i>
+            Um e-mail de confirmação foi enviado para <strong><?= htmlspecialchars($usuario['email']) ?></strong> com
+            uma cópia do seu formulário.
+        </div> -->
+
         <div class="d-grid gap-2">
             <a href="logout.php" class="btn btn-primary">
                 <i class="fas fa-sign-out-alt me-2"></i>Sair do Sistema

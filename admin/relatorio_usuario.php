@@ -115,6 +115,7 @@ if (!empty($usuario['formulario_id'])) {
     $stmt->execute([$usuario['formulario_id']]);
     $arquivos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
 // Se houver arquivos, exibir lista detalhada
 if (!empty($arquivos)) {
     $html .= '<br><strong>Arquivos Enviados no cadastro (' . count($arquivos) . ')</strong> <br><br>
@@ -126,11 +127,16 @@ if (!empty($arquivos)) {
     foreach ($arquivos as $arq) {
         $html .= '<tr>
             <td>' . htmlspecialchars($arq['nome_original']) . '</td>
-            <td>' . htmlspecialchars($usuario['tipos_documentos'] ?? '') . '</td>
+            <td>' . htmlspecialchars($arq['tipo_documento']) . '</td>
         </tr>';
     }
     $html .= '</table>';
+} else {
+    // Caso não tenha arquivos
+    $html .= '<br><strong>Arquivos Enviados no cadastro</strong><br>
+    <em>Nenhum documento enviado.</em><br>';
 }
+
 
 
 $pdf->writeHTML($html, true, false, true, false, '');

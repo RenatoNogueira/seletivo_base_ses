@@ -10,7 +10,7 @@ $erro = '';
 
 // Configurações de período de funcionamento
 $dataAbertura = '2025-08-11';  // Data de abertura do formulário
-$dataFechamento = '2025-08-15'; // Data de fechamento do formulário
+$dataFechamento = '2025-08-28'; // Data de fechamento do formulário
 
 // Verificar status atual
 // Captura hora do computador do usuário se enviada
