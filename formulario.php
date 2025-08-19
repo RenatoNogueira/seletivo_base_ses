@@ -5,6 +5,7 @@ require_once 'includes/parts/header.php';
 date_default_timezone_set('America/Sao_Paulo');
 ?>
 
+
 <body>
     <?php
     require_once 'includes/parts/navbar.php';
@@ -24,19 +25,19 @@ date_default_timezone_set('America/Sao_Paulo');
                 <div class="row">
                     <div class="col-12">
                         <?php if ($sucesso): ?>
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <?= exibirMensagem('sucesso', $sucesso) ?>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                aria-label="Fechar"></button>
-                        </div>
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <?= exibirMensagem('sucesso', $sucesso) ?>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Fechar"></button>
+                            </div>
                         <?php endif; ?>
 
                         <?php if ($erro): ?>
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <?= exibirMensagem('erro', $erro) ?>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                aria-label="Fechar"></button>
-                        </div>
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <?= exibirMensagem('erro', $erro) ?>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Fechar"></button>
+                            </div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -62,7 +63,7 @@ date_default_timezone_set('America/Sao_Paulo');
                                     value="<?= htmlspecialchars($rascunho['nome_completo'] ?? $usuario['nome_completo'] ?? '') ?>"
                                     required>
                                 <?php if (isset($_SESSION['campos_erro']) && in_array('nome_completo', $_SESSION['campos_erro'])): ?>
-                                <div class="invalid-feedback">Nome completo é obrigatório.</div>
+                                    <div class="invalid-feedback">Nome completo é obrigatório.</div>
                                 <?php endif; ?>
                             </div>
 
@@ -113,6 +114,118 @@ date_default_timezone_set('America/Sao_Paulo');
                             </div>
                         </div>
                     </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    <!-- Campo PcD -->
+                    <div class="col-md-6 mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="pcd" name="pcd" value="1"
+                                <?= ($rascunho['pcd'] ?? $formulario['pcd'] ?? '') ? 'checked' : '' ?>
+                                onchange="togglePcdFields()">
+                            <label class="form-check-label  " for="pcd">
+                                Pessoa com Deficiência (PcD)
+                            </label>
+                        </div>
+                    </div>
+
+
+
+                    <!-- Campos PcD (inicialmente ocultos) -->
+                    <div id="pcdFields" class="mb-5"
+                        style="display: <?= ($rascunho['pcd'] ?? $formulario['pcd'] ?? '') ? 'block' : 'none' ?>;">
+                        <h4 class="text-primary mb-3">
+                            <i class="fas fa-wheelchair me-2"></i>Informações sobre Deficiência
+                        </h4>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="tipo_deficiencia" class="form-label">Tipo de Deficiência</label>
+                                <select class="form-select" id="tipo_deficiencia" name="tipo_deficiencia">
+                                    <option value="">Selecione...</option>
+                                    <option value="Física"
+                                        <?= ($rascunho['tipo_deficiencia'] ?? $formulario['tipo_deficiencia'] ?? '') == 'Física' ? 'selected' : '' ?>>
+                                        Física</option>
+                                    <option value="Visual"
+                                        <?= ($rascunho['tipo_deficiencia'] ?? $formulario['tipo_deficiencia'] ?? '') == 'Visual' ? 'selected' : '' ?>>
+                                        Visual</option>
+                                    <option value="Auditiva"
+                                        <?= ($rascunho['tipo_deficiencia'] ?? $formulario['tipo_deficiencia'] ?? '') == 'Auditiva' ? 'selected' : '' ?>>
+                                        Auditiva</option>
+                                    <option value="Intelectual"
+                                        <?= ($rascunho['tipo_deficiencia'] ?? $formulario['tipo_deficiencia'] ?? '') == 'Intelectual' ? 'selected' : '' ?>>
+                                        Intelectual</option>
+                                    <option value="Múltipla"
+                                        <?= ($rascunho['tipo_deficiencia'] ?? $formulario['tipo_deficiencia'] ?? '') == 'Múltipla' ? 'selected' : '' ?>>
+                                        Múltipla</option>
+                                    <option value="Outra"
+                                        <?= ($rascunho['tipo_deficiencia'] ?? $formulario['tipo_deficiencia'] ?? '') == 'Outra' ? 'selected' : '' ?>>
+                                        Outra</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3" id="outra_deficiencia_container"
+                                style="display: <?= ($rascunho['tipo_deficiencia'] ?? $formulario['tipo_deficiencia'] ?? '') == 'Outra' ? 'block' : 'none' ?>;">
+                                <label for="outra_deficiencia" class="form-label">Especifique outra deficiência</label>
+                                <input type="text" class="form-control" id="outra_deficiencia" name="outra_deficiencia"
+                                    value="<?= htmlspecialchars($rascunho['outra_deficiencia'] ?? $formulario['outra_deficiencia'] ?? '') ?>">
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label for="descricao_deficiencia" class="form-label">Descrição da Deficiência</label>
+                                <textarea class="form-control" id="descricao_deficiencia" name="descricao_deficiencia"
+                                    rows="3"
+                                    placeholder="Descreva a natureza e características da sua deficiência..."><?= htmlspecialchars($rascunho['descricao_deficiencia'] ?? $formulario['descricao_deficiencia'] ?? '') ?></textarea>
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label for="limitacoes_funcionais" class="form-label">Limitações Funcionais</label>
+                                <textarea class="form-control" id="limitacoes_funcionais" name="limitacoes_funcionais"
+                                    rows="3"
+                                    placeholder="Descreva como a deficiência impacta suas atividades diárias..."><?= htmlspecialchars($rascunho['limitacoes_funcionais'] ?? $formulario['limitacoes_funcionais'] ?? '') ?></textarea>
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label for="necessidades_apoio" class="form-label">Necessidades de Apoio</label>
+                                <textarea class="form-control" id="necessidades_apoio" name="necessidades_apoio"
+                                    rows="3"
+                                    placeholder="Descreva recursos, adaptações ou apoios necessários..."><?= htmlspecialchars($rascunho['necessidades_apoio'] ?? $formulario['necessidades_apoio'] ?? '') ?></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                     <!-- Informações de Contato -->
                     <div class="mb-5">
@@ -299,59 +412,59 @@ date_default_timezone_set('America/Sao_Paulo');
                             <?php
                             foreach ($cursosExistentes as $index => $curso):
                             ?>
-                            <div class="curso-item" data-index="<?= $index ?>">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h6 class="mb-0">Área de Formação <?= $index + 1 ?></h6>
-                                    <?php if ($index > 0): ?>
-                                    <button type="button" class="btn btn-sm btn-outline-danger"
-                                        onclick="removerCurso(<?= $index ?>)">
-                                        <i class="fas fa-trash"></i> Remover
-                                    </button>
-                                    <?php endif; ?>
+                                <div class="curso-item" data-index="<?= $index ?>">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h6 class="mb-0">Área de Formação <?= $index + 1 ?></h6>
+                                        <?php if ($index > 0): ?>
+                                            <button type="button" class="btn btn-sm btn-outline-danger"
+                                                onclick="removerCurso(<?= $index ?>)">
+                                                <i class="fas fa-trash"></i> Remover
+                                            </button>
+                                        <?php endif; ?>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Nível</label>
+                                            <select class="form-select nivel-select" required
+                                                name="cursos[<?= $index ?>][nivel]"
+                                                onchange="atualizarAreaFormacao(this, <?= $index ?>)">
+                                                <option value="">Selecione...</option>
+                                                <option value="Superior"
+                                                    <?= ($curso['nivel'] ?? '') == 'Superior' ? 'selected' : '' ?>>
+                                                    Superior</option>
+                                                <option value="Técnico"
+                                                    <?= ($curso['nivel'] ?? '') == 'Técnico' ? 'selected' : '' ?>>
+                                                    Técnico</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Área de Formação</label>
+                                            <select class="form-select area-formacao-select" required
+                                                name="cursos[<?= $index ?>][area_formacao]" id="area-formacao-<?= $index ?>"
+                                                style="display: none;">
+                                                <option value="">Selecione primeiro o nível...</option>
+                                            </select>
+                                            <input type="text" class="form-control area-formacao-input"
+                                                name="cursos[<?= $index ?>][area_formacao_texto]"
+                                                id="area-formacao-input-<?= $index ?>"
+                                                value="<?= htmlspecialchars($curso['area_formacao'] ?? '') ?>"
+                                                placeholder="Ex: Tecnologia" style="display: block;" disabled>
+                                        </div>
+
+                                        <div class="col-md-12 mb-3" id="registro-profissional-container-<?= $index ?>"
+                                            style="<?= ($curso['nivel'] ?? '') == 'Superior' ? '' : 'display: none;' ?>">
+                                            <label class="form-label">Número de Registro Profissional <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="text" class="form-control"
+                                                name="cursos[<?= $index ?>][registro_profissional]"
+                                                value="<?= htmlspecialchars($curso['registro_profissional'] ?? '') ?>"
+                                                placeholder="ex: 000000-G/MA">
+                                            <div class="form-text">Obrigatório para profissões regulamentadas</div>
+                                        </div>
+                                    </div>
                                 </div>
-
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Nível</label>
-                                        <select class="form-select nivel-select" required
-                                            name="cursos[<?= $index ?>][nivel]"
-                                            onchange="atualizarAreaFormacao(this, <?= $index ?>)">
-                                            <option value="">Selecione...</option>
-                                            <option value="Superior"
-                                                <?= ($curso['nivel'] ?? '') == 'Superior' ? 'selected' : '' ?>>
-                                                Superior</option>
-                                            <option value="Técnico"
-                                                <?= ($curso['nivel'] ?? '') == 'Técnico' ? 'selected' : '' ?>>
-                                                Técnico</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Área de Formação</label>
-                                        <select class="form-select area-formacao-select" required
-                                            name="cursos[<?= $index ?>][area_formacao]" id="area-formacao-<?= $index ?>"
-                                            style="display: none;">
-                                            <option value="">Selecione primeiro o nível...</option>
-                                        </select>
-                                        <input type="text" class="form-control area-formacao-input"
-                                            name="cursos[<?= $index ?>][area_formacao_texto]"
-                                            id="area-formacao-input-<?= $index ?>"
-                                            value="<?= htmlspecialchars($curso['area_formacao'] ?? '') ?>"
-                                            placeholder="Ex: Tecnologia" style="display: block;" disabled>
-                                    </div>
-
-                                    <div class="col-md-12 mb-3" id="registro-profissional-container-<?= $index ?>"
-                                        style="<?= ($curso['nivel'] ?? '') == 'Superior' ? '' : 'display: none;' ?>">
-                                        <label class="form-label">Número de Registro Profissional <span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" class="form-control"
-                                            name="cursos[<?= $index ?>][registro_profissional]"
-                                            value="<?= htmlspecialchars($curso['registro_profissional'] ?? '') ?>"
-                                            placeholder="ex: 000000-G/MA">
-                                        <div class="form-text">Obrigatório para profissões regulamentadas</div>
-                                    </div>
-                                </div>
-                            </div>
                             <?php endforeach; ?>
                         </div>
                     </div>
@@ -462,17 +575,17 @@ date_default_timezone_set('America/Sao_Paulo');
                     ?>
 
                     <?php if (!empty($arquivosRecentes) || !empty($arquivosAntigos)): ?>
-                    <div class="mt-4">
-                        <h5 class="text-success mb-3"><i class="fas fa-file-alt me-2"></i>Documentos Enviados
-                        </h5>
+                        <div class="mt-4">
+                            <h5 class="text-success mb-3"><i class="fas fa-file-alt me-2"></i>Documentos Enviados
+                            </h5>
 
-                        <?php if (!empty($arquivosRecentes)): ?>
-                        <div class="mb-4">
-                            <h6 class="text-primary"><i class="fas fa-clock me-2"></i>Últimos arquivos enviados
-                            </h6>
+                            <?php if (!empty($arquivosRecentes)): ?>
+                                <div class="mb-4">
+                                    <h6 class="text-primary"><i class="fas fa-clock me-2"></i>Últimos arquivos enviados
+                                    </h6>
 
-                            <!-- Adicionar alerta sobre duplicados -->
-                            <?php
+                                    <!-- Adicionar alerta sobre duplicados -->
+                                    <?php
                                     $totalDuplicados = array_reduce($arquivosRecentes, function ($carry, $grupo) {
                                         return $carry + array_reduce($grupo, function ($c, $item) {
                                             return $c + ($item['duplicado'] ? 1 : 0);
@@ -480,107 +593,108 @@ date_default_timezone_set('America/Sao_Paulo');
                                     }, 0);
 
                                     if ($totalDuplicados > 0): ?>
-                            <div class="alert alert-warning">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                Existem <?= $totalDuplicados ?> arquivo(s) duplicado(s) nos últimos envios.
-                            </div>
-                            <?php endif; ?>
+                                        <div class="alert alert-warning">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                            Existem <?= $totalDuplicados ?> arquivo(s) duplicado(s) nos últimos envios.
+                                        </div>
+                                    <?php endif; ?>
 
-                            <?php foreach ($arquivosRecentes as $tipo => $grupo): ?>
-                            <div class="card mb-3">
-                                <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                                    <h6 class="mb-0"><?= htmlspecialchars($tipo) ?></h6>
-                                    <?php
+                                    <?php foreach ($arquivosRecentes as $tipo => $grupo): ?>
+                                        <div class="card mb-3">
+                                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                                <h6 class="mb-0"><?= htmlspecialchars($tipo) ?></h6>
+                                                <?php
                                                 $duplicadosNoGrupo = array_reduce($grupo, function ($carry, $item) {
                                                     return $carry + ($item['duplicado'] ? 1 : 0);
                                                 }, 0);
                                                 if ($duplicadosNoGrupo > 0): ?>
-                                    <span class="badge bg-danger"><?= $duplicadosNoGrupo ?> duplicado(s)</span>
-                                    <?php endif; ?>
-                                </div>
-                                <ul class="list-group list-group-flush">
-                                    <?php foreach ($grupo as $item):
+                                                    <span class="badge bg-danger"><?= $duplicadosNoGrupo ?> duplicado(s)</span>
+                                                <?php endif; ?>
+                                            </div>
+                                            <ul class="list-group list-group-flush">
+                                                <?php foreach ($grupo as $item):
                                                     $arquivo = $item['arquivo'];
                                                     $isDuplicado = $item['duplicado'];
                                                 ?>
-                                    <li
-                                        class="list-group-item d-flex justify-content-between align-items-center <?= $isDuplicado ? 'bg-light-warning' : '' ?>">
-                                        <div>
-                                            <i class="fas fa-file-pdf text-danger me-2"></i>
-                                            <strong><?= htmlspecialchars($arquivo['nome_original']) ?></strong>
-                                            <?php if ($isDuplicado): ?>
-                                            <span class="badge bg-warning text-dark ms-2">Duplicado</span>
-                                            <?php endif; ?>
-                                            <br>
-                                            <small class="text-muted">Enviado em:
-                                                <?= date('d/m/Y H:i', strtotime($arquivo['uploaded_at'])) ?></small>
-                                        </div>
-                                        <div>
-                                            <a href="<?= htmlspecialchars($arquivo['caminho_arquivo']) ?>"
-                                                class="btn btn-outline-primary btn-sm" target="_blank">
-                                                <i class="fas fa-download me-1"></i>Download
-                                            </a>
-                                            <button class="btn btn-outline-danger btn-sm ms-2"
-                                                onclick="confirmarExclusao(<?= $arquivo['id'] ?>, '<?= htmlspecialchars(addslashes($arquivo['nome_original'])) ?>')">
-                                                <i class="fas fa-trash-alt me-1"></i>Excluir
-                                            </button>
-                                        </div>
-                                    </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </div>
-                            <?php endforeach; ?>
-                        </div>
-                        <?php endif; ?>
+                                                    <li
+                                                        class="list-group-item d-flex justify-content-between align-items-center <?= $isDuplicado ? 'bg-light-warning' : '' ?>">
+                                                        <div>
+                                                            <i class="fas fa-file-pdf text-danger me-2"></i>
+                                                            <strong><?= htmlspecialchars($arquivo['nome_original']) ?></strong>
+                                                            <?php if ($isDuplicado): ?>
+                                                                <span class="badge bg-warning text-dark ms-2">Duplicado</span>
+                                                            <?php endif; ?>
+                                                            <br>
+                                                            <small class="text-muted">Enviado em:
+                                                                <?= date('d/m/Y H:i', strtotime($arquivo['uploaded_at'])) ?></small>
+                                                        </div>
+                                                        <div>
+                                                            <a href="<?= htmlspecialchars($arquivo['caminho_arquivo']) ?>"
+                                                                class="btn btn-outline-primary btn-sm" target="_blank">
+                                                                <i class="fas fa-download me-1"></i>Download
+                                                            </a>
+                                                            <button class="btn btn-outline-danger btn-sm ms-2"
+                                                                onclick="confirmarExclusao(<?= $arquivo['id'] ?>, '<?= htmlspecialchars(addslashes($arquivo['nome_original'])) ?>', event)">
+                                                                <i class="fas fa-trash-alt me-1"></i>Excluir
+                                                            </button>
 
-                        <!-- Código para arquivos antigos permanece o mesmo -->
-                        <?php if (!empty($arquivosAntigos)): ?>
-                        <div class="mb-4">
-                            <h6 class="text-secondary"><i class="fas fa-history me-2"></i>Anteriores</h6>
-                            <?php foreach ($arquivosAntigos as $tipo => $grupo): ?>
-                            <div class="card mb-3">
-                                <div class="card-header bg-light">
-                                    <h6 class="mb-0"><?= htmlspecialchars($tipo) ?></h6>
+                                                        </div>
+                                                    </li>
+                                                <?php endforeach; ?>
+                                            </ul>
+                                        </div>
+                                    <?php endforeach; ?>
                                 </div>
-                                <ul class="list-group list-group-flush">
-                                    <?php foreach ($grupo as $item):
+                            <?php endif; ?>
+
+                            <!-- Código para arquivos antigos permanece o mesmo -->
+                            <?php if (!empty($arquivosAntigos)): ?>
+                                <div class="mb-4">
+                                    <h6 class="text-secondary"><i class="fas fa-history me-2"></i>Anteriores</h6>
+                                    <?php foreach ($arquivosAntigos as $tipo => $grupo): ?>
+                                        <div class="card mb-3">
+                                            <div class="card-header bg-light">
+                                                <h6 class="mb-0"><?= htmlspecialchars($tipo) ?></h6>
+                                            </div>
+                                            <ul class="list-group list-group-flush">
+                                                <?php foreach ($grupo as $item):
                                                     $arquivo = $item['arquivo'];
                                                     $isDuplicado = $item['duplicado'];
                                                 ?>
-                                    <li
-                                        class="list-group-item d-flex justify-content-between align-items-center <?= $isDuplicado ? 'bg-light-warning' : '' ?>">
-                                        <div>
-                                            <i class="fas fa-file-pdf text-danger me-2"></i>
-                                            <strong><?= htmlspecialchars($arquivo['nome_original']) ?></strong>
-                                            <?php if ($isDuplicado): ?>
-                                            <span class="badge bg-warning text-dark ms-2">Duplicado</span>
-                                            <?php endif; ?>
-                                            <br>
-                                            <small class="text-muted">Enviado em:
-                                                <?= date('d/m/Y H:i', strtotime($arquivo['uploaded_at'])) ?></small>
+                                                    <li
+                                                        class="list-group-item d-flex justify-content-between align-items-center <?= $isDuplicado ? 'bg-light-warning' : '' ?>">
+                                                        <div>
+                                                            <i class="fas fa-file-pdf text-danger me-2"></i>
+                                                            <strong><?= htmlspecialchars($arquivo['nome_original']) ?></strong>
+                                                            <?php if ($isDuplicado): ?>
+                                                                <span class="badge bg-warning text-dark ms-2">Duplicado</span>
+                                                            <?php endif; ?>
+                                                            <br>
+                                                            <small class="text-muted">Enviado em:
+                                                                <?= date('d/m/Y H:i', strtotime($arquivo['uploaded_at'])) ?></small>
+                                                        </div>
+                                                        <div>
+                                                            <a href="<?= htmlspecialchars($arquivo['caminho_arquivo']) ?>"
+                                                                class="btn btn-outline-primary btn-sm" target="_blank">
+                                                                <i class="fas fa-download me-1"></i>Download
+                                                            </a>
+                                                            <button class="btn btn-outline-danger btn-sm ms-2"
+                                                                onclick="confirmarExclusao(<?= $arquivo['id'] ?>, '<?= htmlspecialchars(addslashes($arquivo['nome_original'])) ?>', event)">
+                                                                <i class="fas fa-trash-alt me-1"></i>Excluir
+                                                            </button>
+                                                        </div>
+                                                    </li>
+                                                <?php endforeach; ?>
+                                            </ul>
                                         </div>
-                                        <div>
-                                            <a href="<?= htmlspecialchars($arquivo['caminho_arquivo']) ?>"
-                                                class="btn btn-outline-primary btn-sm" target="_blank">
-                                                <i class="fas fa-download me-1"></i>Download
-                                            </a>
-                                            <button class="btn btn-outline-danger btn-sm ms-2"
-                                                onclick="confirmarExclusao(<?= $arquivo['id'] ?>, '<?= htmlspecialchars(addslashes($arquivo['nome_original'])) ?>')">
-                                                <i class="fas fa-trash-alt me-1"></i>Excluir
-                                            </button>
-                                        </div>
-                                    </li>
                                     <?php endforeach; ?>
-                                </ul>
-                            </div>
-                            <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
-                        <?php endif; ?>
-                    </div>
                     <?php else: ?>
-                    <div class="mt-4 text-muted">
-                        <i class="fas fa-info-circle me-2"></i>Nenhum documento enviado ainda.
-                    </div>
+                        <div class="mt-4 text-muted">
+                            <i class="fas fa-info-circle me-2"></i>Nenhum documento enviado ainda.
+                        </div>
                     <?php endif; ?>
 
 
@@ -601,7 +715,7 @@ date_default_timezone_set('America/Sao_Paulo');
                                 <div class="form-text">Máximo 1500 caracteres. <span
                                         id="contador_objetivo">0</span>/1500</div>
                                 <?php if (isset($_SESSION['campos_erro']) && in_array('objetivo_pgs', $_SESSION['campos_erro'])): ?>
-                                <div class="invalid-feedback">Objetivo de participar do PGS é obrigatório.</div>
+                                    <div class="invalid-feedback">Objetivo de participar do PGS é obrigatório.</div>
                                 <?php endif; ?>
                             </div>
 
@@ -615,8 +729,8 @@ date_default_timezone_set('America/Sao_Paulo');
                                 <div class="form-text">Máximo 1500 caracteres. <span
                                         id="contador_atividades">0</span>/1500</div>
                                 <?php if (isset($_SESSION['campos_erro']) && in_array('atividades_pgs', $_SESSION['campos_erro'])): ?>
-                                <div class="invalid-feedback">Atividades e funções no PGS são obrigatórias.
-                                </div>
+                                    <div class="invalid-feedback">Atividades e funções no PGS são obrigatórias.
+                                    </div>
                                 <?php endif; ?>
                             </div>
 
@@ -631,8 +745,8 @@ date_default_timezone_set('America/Sao_Paulo');
                                 <div class="form-text">Máximo 1500 caracteres. <span
                                         id="contador_contribuicao">0</span>/1500</div>
                                 <?php if (isset($_SESSION['campos_erro']) && in_array('contribuicao_pgs', $_SESSION['campos_erro'])): ?>
-                                <div class="invalid-feedback">Contribuição para a gestão da saúde pública é
-                                    obrigatória.</div>
+                                    <div class="invalid-feedback">Contribuição para a gestão da saúde pública é
+                                        obrigatória.</div>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -652,74 +766,97 @@ date_default_timezone_set('America/Sao_Paulo');
                     </div>
                 </form>
             </div>
-        </div>
-    </div>
-    </div>
-    </div>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"
-        integrity="sha384-7qAoOXltbVP82dhxHAUje59V5r2YsVfBafyUDxEdApLPmcdhBPg1DKg1ERo0BZlK" crossorigin="anonymous">
-    </script>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
-    });
-    </script>
 
 
-    <script>
-    let cursoIndex = <?= count($cursosExistentes) ?>;
 
-    // Formatação de telefone
-    function formatarTelefone(input) {
-        let value = input.value.replace(/\D/g, '');
-        if (value.length <= 10) {
-            value = value.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
-        } else {
-            value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-        }
-        input.value = value;
-    }
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+                integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+                crossorigin="anonymous">
+            </script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"
+                integrity="sha384-7qAoOXltbVP82dhxHAUje59V5r2YsVfBafyUDxEdApLPmcdhBPg1DKg1ERo0BZlK"
+                crossorigin="anonymous">
+            </script>
 
-    // Formatação de CEP
-    function formatarCEP(input) {
-        let value = input.value.replace(/\D/g, '');
-        value = value.replace(/(\d{5})(\d{3})/, '$1-$2');
-        input.value = value;
-    }
 
-    // Buscar endereço por CEP
-    function buscarCEP() {
-        const cep = document.getElementById('cep').value.replace(/\D/g, '');
 
-        if (cep.length === 8) {
-            fetch(`https://viacep.com.br/ws/${cep}/json/`)
-                .then(response => response.json())
-                .then(data => {
-                    if (!data.erro) {
-                        document.getElementById('logradouro').value = data.logradouro || '';
-                        document.getElementById('bairro').value = data.bairro || '';
-                        document.getElementById('cidade').value = data.localidade || '';
-                        document.getElementById('estado').value = data.uf || '';
+
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                    var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+                        return new bootstrap.Tooltip(tooltipTriggerEl);
+                    });
+                });
+            </script>
+
+
+            <script>
+                let cursoIndex = <?= count($cursosExistentes) ?>;
+
+                // Formatação de telefone
+                function formatarTelefone(input) {
+                    let value = input.value.replace(/\D/g, '');
+                    if (value.length <= 10) {
+                        value = value.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+                    } else {
+                        value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
                     }
-                })
-                .catch(error => console.error('Erro ao buscar CEP:', error));
-        }
-    }
+                    input.value = value;
+                }
 
-    // Adicionar curso
-    function adicionarCurso() {
-        const container = document.getElementById('cursosContainer');
-        const cursoHTML = `
+                // Formatação de CEP
+                function formatarCEP(input) {
+                    let value = input.value.replace(/\D/g, '');
+                    value = value.replace(/(\d{5})(\d{3})/, '$1-$2');
+                    input.value = value;
+                }
+
+                // Buscar endereço por CEP
+                function buscarCEP() {
+                    const cep = document.getElementById('cep').value.replace(/\D/g, '');
+
+                    if (cep.length === 8) {
+                        fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (!data.erro) {
+                                    document.getElementById('logradouro').value = data.logradouro || '';
+                                    document.getElementById('bairro').value = data.bairro || '';
+                                    document.getElementById('cidade').value = data.localidade || '';
+                                    document.getElementById('estado').value = data.uf || '';
+                                } else {
+                                    alert('CEP não encontrado. Verifique e tente novamente.');
+                                    limparCamposEndereco();
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Erro ao buscar CEP:', error);
+                                alert('Erro ao buscar o CEP. Tente novamente mais tarde.');
+                                limparCamposEndereco();
+                            });
+                    } else if (cep.length > 0) {
+                        alert('CEP inválido. Digite um CEP com 8 números.');
+                        limparCamposEndereco();
+                    }
+                }
+
+                function limparCamposEndereco() {
+                    document.getElementById('logradouro').value = '';
+                    document.getElementById('bairro').value = '';
+                    document.getElementById('cidade').value = '';
+                    document.getElementById('estado').value = '';
+                }
+
+
+                // Adicionar curso
+                function adicionarCurso() {
+                    const container = document.getElementById('cursosContainer');
+                    const cursoHTML = `
                 <div class="curso-item" data-index="${cursoIndex}">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="mb-0">Área de Formação ${cursoIndex + 1}</h6>
@@ -761,158 +898,160 @@ date_default_timezone_set('America/Sao_Paulo');
                 </div>
             `;
 
-        container.insertAdjacentHTML('beforeend', cursoHTML);
+                    container.insertAdjacentHTML('beforeend', cursoHTML);
 
-        // Adicionar listeners aos novos campos
-        const newCurso = container.querySelector(`[data-index="${cursoIndex}"]`);
-        const newInputs = newCurso.querySelectorAll('input, select, textarea');
-        newInputs.forEach(input => {
-            input.addEventListener('input', autoSave);
-            input.addEventListener('change', autoSave);
-        });
+                    // Adicionar listeners aos novos campos
+                    const newCurso = container.querySelector(`[data-index="${cursoIndex}"]`);
+                    const newInputs = newCurso.querySelectorAll('input, select, textarea');
+                    newInputs.forEach(input => {
+                        input.addEventListener('input', autoSave);
+                        input.addEventListener('change', autoSave);
+                    });
 
-        cursoIndex++;
-        autoSave();
-    }
+                    cursoIndex++;
+                    autoSave();
+                }
 
-    // Remover curso
-    function removerCurso(index) {
-        const cursoItem = document.querySelector(`.curso-item[data-index="${index}"]`);
-        if (cursoItem) {
-            cursoItem.remove();
-            autoSave();
-        }
-    }
+                // Remover curso
+                function removerCurso(index) {
+                    const cursoItem = document.querySelector(`.curso-item[data-index="${index}"]`);
+                    if (cursoItem) {
+                        cursoItem.remove();
+                        autoSave();
+                    }
+                }
 
 
 
-    // Áreas de formação por nível
-    const areasFormacao = {
-        'Técnico': [
-            'Técnico Administrativo',
-            'Técnico em Enfermagem*',
-            'Técnico em Eletrotécnica',
-            'Técnico em Massoterapia',
-            'Técnico em Radiologia*'
-        ],
-        'Superior': [
-            'Administração',
-            'Ciências Contábeis',
-            'Ciências da Computação',
-            'Ciências Econômicas',
-            'Tecnólogo em Recursos Humanos',
-            'Comunicação Social/Jornalismo*',
-            'Direito*',
-            'Enfermagem*',
-            'Fisioterapia*',
-            'Medicina*',
-            'Nutrição*',
-            'Psicologia*',
-        ]
-    };
+                // Áreas de formação por nível
+                const areasFormacao = {
+                    'Técnico': [
+                        'Técnico Administrativo',
+                        'Técnico em Enfermagem*',
+                        'Técnico em Eletrotécnica',
+                        'Técnico em Massoterapia',
+                        'Técnico em Radiologia*'
+                    ],
+                    'Superior': [
+                        'Administração',
+                        'Ciências Contábeis',
+                        'Ciências da Computação',
+                        'Ciências Econômicas',
+                        'Tecnólogo em Recursos Humanos',
+                        'Comunicação Social/Jornalismo*',
+                        'Direito*',
+                        'Enfermagem*',
+                        'Fisioterapia*',
+                        'Medicina*',
+                        'Nutrição*',
+                        'Psicologia*',
+                    ]
+                };
 
-    // Atualizar área de formação baseado no nível selecionado
-    function atualizarAreaFormacao(selectNivel, index) {
-        const nivel = selectNivel.value;
-        const selectAreaFormacao = document.getElementById(`area-formacao-${index}`);
-        const inputAreaFormacao = document.getElementById(`area-formacao-input-${index}`);
-        const registroProfissionalContainer = document.getElementById(`registro-profissional-container-${index}`);
+                // Atualizar área de formação baseado no nível selecionado
+                function atualizarAreaFormacao(selectNivel, index) {
+                    const nivel = selectNivel.value;
+                    const selectAreaFormacao = document.getElementById(`area-formacao-${index}`);
+                    const inputAreaFormacao = document.getElementById(`area-formacao-input-${index}`);
+                    const registroProfissionalContainer = document.getElementById(
+                        `registro-profissional-container-${index}`);
 
-        if (nivel === 'Superior' || nivel === 'Técnico') {
-            // Mostrar select e esconder input
-            selectAreaFormacao.style.display = 'block';
-            inputAreaFormacao.style.display = 'none';
+                    if (nivel === 'Superior' || nivel === 'Técnico') {
+                        // Mostrar select e esconder input
+                        selectAreaFormacao.style.display = 'block';
+                        inputAreaFormacao.style.display = 'none';
 
-            // Limpar e popular o select
-            selectAreaFormacao.innerHTML = '<option value="">Selecione a área...</option>';
+                        // Limpar e popular o select
+                        selectAreaFormacao.innerHTML = '<option value="">Selecione a área...</option>';
 
-            if (areasFormacao[nivel]) {
-                areasFormacao[nivel].forEach(area => {
-                    const option = document.createElement('option');
-                    option.value = area;
-                    option.textContent = area;
-                    selectAreaFormacao.appendChild(option);
+                        if (areasFormacao[nivel]) {
+                            areasFormacao[nivel].forEach(area => {
+                                const option = document.createElement('option');
+                                option.value = area;
+                                option.textContent = area;
+                                selectAreaFormacao.appendChild(option);
+                            });
+                        }
+
+                        // Atualizar o name do campo ativo
+                        selectAreaFormacao.name = `cursos[${index}][area_formacao]`;
+                        inputAreaFormacao.name = `cursos[${index}][area_formacao_texto]`;
+
+                        // Adicionar evento para verificar se precisa de registro profissional
+                        selectAreaFormacao.addEventListener('change', function() {
+                            verificarRegistroProfissional(this.value, index);
+                        });
+
+                    } else {
+                        // Mostrar input e esconder select para "Livre" ou vazio
+                        selectAreaFormacao.style.display = 'none';
+                        inputAreaFormacao.style.display = 'block';
+
+                        // Esconder registro profissional para nível "Livre"
+                        if (registroProfissionalContainer) {
+                            registroProfissionalContainer.style.display = 'none';
+                        }
+
+                        // Atualizar o name do campo ativo
+                        inputAreaFormacao.name = `cursos[${index}][area_formacao]`;
+                        selectAreaFormacao.name = `cursos[${index}][area_formacao_select]`;
+                    }
+                }
+
+                // Função para verificar se a área de formação precisa de registro profissional
+                function verificarRegistroProfissional(areaFormacao, index) {
+                    const registroProfissionalContainer = document.getElementById(
+                        `registro-profissional-container-${index}`);
+
+                    // Áreas que exigem registro profissional (com asterisco na imagem)
+                    const areasComRegistro = [
+                        'Técnico em Enfermagem*',
+                        'Técnico em Radiologia*',
+                        'Comunicação Social/Jornalismo*',
+                        'Direito*',
+                        'Enfermagem*',
+                        'Fisioterapia*',
+                        'Medicina*',
+                        'Nutrição*',
+                        'Psicologia*',
+                    ];
+
+                    if (areasComRegistro.includes(areaFormacao)) {
+                        registroProfissionalContainer.style.display = 'block';
+                    } else {
+                        registroProfissionalContainer.style.display = 'none';
+                    }
+                }
+
+                // Inicializar áreas de formação para cursos existentes
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Verificar cursos já carregados
+                    document.querySelectorAll('.nivel-select').forEach((select, index) => {
+                        if (select.value) {
+                            atualizarAreaFormacao(select, index);
+                        }
+                    });
+
+                    // Inicializar contadores de caracteres PGS
+                    atualizarContador('objetivo_pgs', 'contador_objetivo');
+                    atualizarContador('atividades_pgs', 'contador_atividades');
+                    atualizarContador('contribuicao_pgs', 'contador_contribuicao');
                 });
-            }
 
-            // Atualizar o name do campo ativo
-            selectAreaFormacao.name = `cursos[${index}][area_formacao]`;
-            inputAreaFormacao.name = `cursos[${index}][area_formacao_texto]`;
+                // Limpar formulário
+                function limparFormulario() {
+                    if (confirm('Tem certeza que deseja limpar todos os dados do formulário?')) {
+                        // Limpar o formulário
+                        const form = document.getElementById('formularioForm');
+                        form.reset();
 
-            // Adicionar evento para verificar se precisa de registro profissional
-            selectAreaFormacao.addEventListener('change', function() {
-                verificarRegistroProfissional(this.value, index);
-            });
+                        // Limpar a lista de cursos e recriar um curso inicial
+                        const cursosContainer = document.getElementById('cursosContainer');
+                        cursosContainer.innerHTML = '';
+                        cursoIndex = 1; // Redefinir índice para 1 (já que o primeiro curso tem índice 0)
 
-        } else {
-            // Mostrar input e esconder select para "Livre" ou vazio
-            selectAreaFormacao.style.display = 'none';
-            inputAreaFormacao.style.display = 'block';
-
-            // Esconder registro profissional para nível "Livre"
-            if (registroProfissionalContainer) {
-                registroProfissionalContainer.style.display = 'none';
-            }
-
-            // Atualizar o name do campo ativo
-            inputAreaFormacao.name = `cursos[${index}][area_formacao]`;
-            selectAreaFormacao.name = `cursos[${index}][area_formacao_select]`;
-        }
-    }
-
-    // Função para verificar se a área de formação precisa de registro profissional
-    function verificarRegistroProfissional(areaFormacao, index) {
-        const registroProfissionalContainer = document.getElementById(`registro-profissional-container-${index}`);
-
-        // Áreas que exigem registro profissional (com asterisco na imagem)
-        const areasComRegistro = [
-            'Técnico em Enfermagem*',
-            'Técnico em Radiologia*',
-            'Comunicação Social/Jornalismo*',
-            'Direito*',
-            'Enfermagem*',
-            'Fisioterapia*',
-            'Medicina*',
-            'Nutrição*',
-            'Psicologia*',
-        ];
-
-        if (areasComRegistro.includes(areaFormacao)) {
-            registroProfissionalContainer.style.display = 'block';
-        } else {
-            registroProfissionalContainer.style.display = 'none';
-        }
-    }
-
-    // Inicializar áreas de formação para cursos existentes
-    document.addEventListener('DOMContentLoaded', function() {
-        // Verificar cursos já carregados
-        document.querySelectorAll('.nivel-select').forEach((select, index) => {
-            if (select.value) {
-                atualizarAreaFormacao(select, index);
-            }
-        });
-
-        // Inicializar contadores de caracteres PGS
-        atualizarContador('objetivo_pgs', 'contador_objetivo');
-        atualizarContador('atividades_pgs', 'contador_atividades');
-        atualizarContador('contribuicao_pgs', 'contador_contribuicao');
-    });
-
-    // Limpar formulário
-    function limparFormulario() {
-        if (confirm('Tem certeza que deseja limpar todos os dados do formulário?')) {
-            // Limpar o formulário
-            const form = document.getElementById('formularioForm');
-            form.reset();
-
-            // Limpar a lista de cursos e recriar um curso inicial
-            const cursosContainer = document.getElementById('cursosContainer');
-            cursosContainer.innerHTML = '';
-            cursoIndex = 1; // Redefinir índice para 1 (já que o primeiro curso tem índice 0)
-
-            // Adicionar um curso inicial
-            const cursoHTML = `
+                        // Adicionar um curso inicial
+                        const cursoHTML = `
             <div class="curso-item" data-index="0">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h6 class="mb-0">Área de Formação 1</h6>
@@ -941,95 +1080,197 @@ date_default_timezone_set('America/Sao_Paulo');
                 </div>
             </div>
         `;
-            65
-            cursosContainer.insertAdjacentHTML('beforeend', cursoHTML);
+                        65
+                        cursosContainer.insertAdjacentHTML('beforeend', cursoHTML);
 
-            // Limpar a lista de arquivos (drag & drop)
-            selectedFiles = [];
-            updateFilesList();
+                        // Limpar a lista de arquivos (drag & drop)
+                        selectedFiles = [];
+                        updateFilesList();
 
-            // Atualizar progresso
-            verificarProgresso();
+                        // Atualizar progresso
+                        verificarProgresso();
 
-            // Disparar auto-save para salvar o estado limpo
-            autoSave();
-        }
-    }
+                        // Disparar auto-save para salvar o estado limpo
+                        autoSave();
+                    }
+                }
 
-    // Contadores de caracteres para campos PGS
-    function atualizarContador(textareaId, contadorId) {
-        const textarea = document.getElementById(textareaId);
-        const contador = document.getElementById(contadorId);
+                // Contadores de caracteres para campos PGS
+                function atualizarContador(textareaId, contadorId) {
+                    const textarea = document.getElementById(textareaId);
+                    const contador = document.getElementById(contadorId);
 
-        if (textarea && contador) {
-            contador.textContent = textarea.value.length;
+                    if (textarea && contador) {
+                        contador.textContent = textarea.value.length;
 
-            // Adicionar classe de aviso quando próximo do limite
-            if (textarea.value.length > 1400) {
-                contador.style.color = '#dc3545'; // vermelho
-            } else if (textarea.value.length > 1200) {
-                contador.style.color = '#ffc107'; // amarelo
-            } else {
-                contador.style.color = '#6c757d'; // cinza padrão
-            }
-        }
-    }
+                        // Adicionar classe de aviso quando próximo do limite
+                        if (textarea.value.length > 1400) {
+                            contador.style.color = '#dc3545'; // vermelho
+                        } else if (textarea.value.length > 1200) {
+                            contador.style.color = '#ffc107'; // amarelo
+                        } else {
+                            contador.style.color = '#6c757d'; // cinza padrão
+                        }
+                    }
+                }
 
-    // Event listeners
-    document.getElementById('telefone_fixo').addEventListener('input', function() {
-        formatarTelefone(this);
-    });
+                // Event listeners
+                document.getElementById('telefone_fixo').addEventListener('input', function() {
+                    formatarTelefone(this);
+                });
 
-    document.getElementById('celular').addEventListener('input', function() {
-        formatarTelefone(this);
-    });
+                document.getElementById('celular').addEventListener('input', function() {
+                    formatarTelefone(this);
+                });
 
-    document.getElementById('cep').addEventListener('input', function() {
-        formatarCEP(this);
-    });
+                document.getElementById('cep').addEventListener('input', function() {
+                    formatarCEP(this);
+                });
 
-    document.getElementById('cep').addEventListener('blur', buscarCEP);
+                document.getElementById('cep').addEventListener('blur', buscarCEP);
 
-    // Event listeners para contadores de caracteres PGS
-    document.getElementById('objetivo_pgs').addEventListener('input', function() {
-        atualizarContador('objetivo_pgs', 'contador_objetivo');
-    });
+                // Event listeners para contadores de caracteres PGS
+                document.getElementById('objetivo_pgs').addEventListener('input', function() {
+                    atualizarContador('objetivo_pgs', 'contador_objetivo');
+                });
 
-    document.getElementById('atividades_pgs').addEventListener('input', function() {
-        atualizarContador('atividades_pgs', 'contador_atividades');
-    });
+                document.getElementById('atividades_pgs').addEventListener('input', function() {
+                    atualizarContador('atividades_pgs', 'contador_atividades');
+                });
 
-    document.getElementById('contribuicao_pgs').addEventListener('input', function() {
-        atualizarContador('contribuicao_pgs', 'contador_contribuicao');
-    });
+                document.getElementById('contribuicao_pgs').addEventListener('input', function() {
+                    atualizarContador('contribuicao_pgs', 'contador_contribuicao');
+                });
 
-    // Validação do formulário
-    document.getElementById('formularioForm').addEventListener('submit', function(e) {
-        const acao = e.submitter.value;
+                // Validação do formulário
+                document.getElementById('formularioForm').addEventListener('submit', function(e) {
+                    const acao = e.submitter.value;
 
-        if (acao === 'enviar_formulario') {
-            const nomeCompleto = document.getElementById('nome_completo').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const celular = document.getElementById('celular').value.trim();
+                    if (acao === 'enviar_formulario') {
+                        const nomeCompleto = document.getElementById('nome_completo').value.trim();
+                        const email = document.getElementById('email').value.trim();
+                        const celular = document.getElementById('celular').value.trim();
 
-            if (!nomeCompleto || !email || !celular) {
-                e.preventDefault();
-                alert('Por favor, preencha os campos obrigatórios: Nome Completo, Email e Celular.');
-                return;
-            }
+                        if (!nomeCompleto || !email || !celular) {
+                            e.preventDefault();
+                            alert('Por favor, preencha os campos obrigatórios: Nome Completo, Email e Celular.');
+                            return;
+                        }
 
-            if (!confirm(
-                    'Tem certeza que deseja enviar o formulário?'
-                )) {
-                e.preventDefault();
-            }
-        }
-    });
-    </script>
-    <script src="assets/js/upload.js"></script>
-    <script src="assets/js/delete.js"></script>
-    <script src="assets/js/barra_de_progresso.js"></script>
-    <script src="assets/js/auto_save.js"></script>
+                        if (!confirm(
+                                'Tem certeza que deseja enviar o formulário?'
+                            )) {
+                            e.preventDefault();
+                        }
+                    }
+                });
+
+
+
+                // esse script faz a função de deletar os arquivos com confirmação
+                function confirmarExclusao(id, nomeArquivo, event) {
+                    if (event) event.preventDefault(); // impede submit/pulo
+
+                    Swal.fire({
+                        title: "Tem certeza?",
+                        text: 'Deseja excluir o arquivo "' + nomeArquivo + '"?',
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Sim, excluir!",
+                        cancelButtonText: "Cancelar"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch("excluir_arquivo.php", {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    body: "id=" + encodeURIComponent(id)
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        Swal.fire("Excluído!", data.message, "success")
+                                            .then(() => location.reload());
+                                    } else {
+                                        Swal.fire("Erro!", data.message, "error");
+                                    }
+                                })
+                                .catch(() => {
+                                    Swal.fire("Erro!", "Erro ao processar requisição.", "error");
+                                });
+                        }
+                    });
+                }
+
+
+
+
+                // No final do script, adicione estas funções:
+
+                // Alternar campos PcD
+                function togglePcdFields() {
+                    const pcdCheckbox = document.getElementById('pcd');
+                    const pcdFields = document.getElementById('pcdFields');
+
+                    if (pcdCheckbox.checked) {
+                        pcdFields.style.display = 'block';
+                    } else {
+                        pcdFields.style.display = 'none';
+                        // Limpar campos PcD quando desmarcado
+                        document.getElementById('tipo_deficiencia').value = '';
+                        document.getElementById('outra_deficiencia').value = '';
+                        document.getElementById('descricao_deficiencia').value = '';
+                        document.getElementById('limitacoes_funcionais').value = '';
+                        document.getElementById('necessidades_apoio').value = '';
+                        document.getElementById('documentos_pcd').value = '';
+                        document.getElementById('outra_deficiencia_container').style.display = 'none';
+                    }
+                    autoSave();
+                }
+
+                // Mostrar campo "outra deficiência" quando selecionado
+                function toggleOutraDeficiencia() {
+                    const tipoDeficiencia = document.getElementById('tipo_deficiencia').value;
+                    const outraDeficienciaContainer = document.getElementById('outra_deficiencia_container');
+
+                    if (tipoDeficiencia === 'Outra') {
+                        outraDeficienciaContainer.style.display = 'block';
+                    } else {
+                        outraDeficienciaContainer.style.display = 'none';
+                        document.getElementById('outra_deficiencia').value = '';
+                    }
+                    autoSave();
+                }
+
+                // Adicione event listeners no DOMContentLoaded
+                document.addEventListener('DOMContentLoaded', function() {
+                    // ... código existente ...
+
+                    // Adicione estes listeners para campos PcD
+                    document.getElementById('tipo_deficiencia').addEventListener('change', toggleOutraDeficiencia);
+
+                    // Verifique se há valores salvos para mostrar o campo "outra deficiência"
+                    const tipoDeficiencia = document.getElementById('tipo_deficiencia').value;
+                    if (tipoDeficiencia === 'Outra') {
+                        document.getElementById('outra_deficiencia_container').style.display = 'block';
+                    }
+
+                    // Adicione listeners para auto-save nos campos PcD
+                    const pcdInputs = document.querySelectorAll(
+                        '#pcdFields input, #pcdFields select, #pcdFields textarea');
+                    pcdInputs.forEach(input => {
+                        input.addEventListener('input', autoSave);
+                        input.addEventListener('change', autoSave);
+                    });
+                });
+            </script>
+            <script src="assets/js/upload.js"></script>
+            <script src="assets/js/barra_de_progresso.js"></script>
+            <script src="assets/js/auto_save.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 </html>

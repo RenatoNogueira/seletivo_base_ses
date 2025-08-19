@@ -260,15 +260,15 @@ $indiceMesMaisCadastros = array_search(max($dadosCompleto), $dadosCompleto);
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAno">
                                             <?php foreach ($anosDisponiveis as $ano): ?>
-                                            <li>
-                                                <a class="dropdown-item <?= $ano == $anoSelecionado ? 'active' : '' ?>"
-                                                    href="?ano=<?= $ano ?>">
-                                                    <i class="fas fa-calendar me-2"></i><?= $ano ?>
-                                                    <?php if ($ano == $anoSelecionado): ?>
-                                                    <i class="fas fa-check ms-2"></i>
-                                                    <?php endif; ?>
-                                                </a>
-                                            </li>
+                                                <li>
+                                                    <a class="dropdown-item <?= $ano == $anoSelecionado ? 'active' : '' ?>"
+                                                        href="?ano=<?= $ano ?>">
+                                                        <i class="fas fa-calendar me-2"></i><?= $ano ?>
+                                                        <?php if ($ano == $anoSelecionado): ?>
+                                                            <i class="fas fa-check ms-2"></i>
+                                                        <?php endif; ?>
+                                                    </a>
+                                                </li>
                                             <?php endforeach; ?>
                                         </ul>
                                     </div>
@@ -460,174 +460,174 @@ $indiceMesMaisCadastros = array_search(max($dadosCompleto), $dadosCompleto);
 
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.0.2"></script>
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Elementos do DOM
-        const ctx = document.getElementById('cadastrosChart').getContext('2d');
-        const chartContainer = document.querySelector('.chart-container');
-        const dropdownAno = document.getElementById('dropdownAno');
-        const meses = <?= $mesesJson ?>;
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementos do DOM
+            const ctx = document.getElementById('cadastrosChart').getContext('2d');
+            const chartContainer = document.querySelector('.chart-container');
+            const dropdownAno = document.getElementById('dropdownAno');
+            const meses = <?= $mesesJson ?>;
 
-        // Variável para armazenar a instância do gráfico
-        let cadastrosChart;
+            // Variável para armazenar a instância do gráfico
+            let cadastrosChart;
 
-        // Função para renderizar o gráfico
-        // Adicione no início do script (após obter os meses):
-        const mesAtual = new Date().getMonth(); // 0-11 (Jan-Dez)
+            // Função para renderizar o gráfico
+            // Adicione no início do script (após obter os meses):
+            const mesAtual = new Date().getMonth(); // 0-11 (Jan-Dez)
 
-        // Atualize a função renderChart para incluir a anotação:
-        function renderChart(data, ano) {
-            if (cadastrosChart) {
-                cadastrosChart.destroy();
+            // Atualize a função renderChart para incluir a anotação:
+            function renderChart(data, ano) {
+                if (cadastrosChart) {
+                    cadastrosChart.destroy();
+                }
+
+                dropdownAno.textContent = `Ano: ${ano}`;
+
+                cadastrosChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: meses,
+                        datasets: [{
+                            label: 'Cadastros de Usuários',
+                            data: data,
+                            borderColor: 'rgb(102, 126, 234)',
+                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: 'rgb(102, 126, 234)',
+                            pointRadius: function(context) {
+                                return context.dataIndex === mesAtual ? 6 : 4;
+                            },
+                            pointHoverRadius: function(context) {
+                                return context.dataIndex === mesAtual ? 8 : 6;
+                            }
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.dataset.label}: ${context.raw}`;
+                                    }
+                                }
+                            },
+                            annotation: {
+                                annotations: {
+                                    highlightMonth: {
+                                        type: 'box',
+                                        xMin: mesAtual - 0.5,
+                                        xMax: mesAtual + 0.5,
+                                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                                        borderColor: 'rgba(255, 99, 132, 0.5)',
+                                        borderWidth: 1
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Quantidade de Cadastros'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Meses do Ano'
+                                }
+                            }
+                        },
+                        interaction: {
+                            mode: 'nearest',
+                            axis: 'x',
+                            intersect: false
+                        }
+                    }
+                });
             }
 
-            dropdownAno.textContent = `Ano: ${ano}`;
+            // Carregar dados iniciais
+            renderChart(<?= $dadosGraficoJson ?>, <?= $anoSelecionado ?>);
 
-            cadastrosChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: meses,
-                    datasets: [{
-                        label: 'Cadastros de Usuários',
-                        data: data,
-                        borderColor: 'rgb(102, 126, 234)',
-                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                        borderWidth: 2,
-                        tension: 0.4,
-                        fill: true,
-                        pointBackgroundColor: 'rgb(102, 126, 234)',
-                        pointRadius: function(context) {
-                            return context.dataIndex === mesAtual ? 6 : 4;
-                        },
-                        pointHoverRadius: function(context) {
-                            return context.dataIndex === mesAtual ? 8 : 6;
-                        }
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false,
-                            callbacks: {
-                                label: function(context) {
-                                    return `${context.dataset.label}: ${context.raw}`;
-                                }
-                            }
-                        },
-                        annotation: {
-                            annotations: {
-                                highlightMonth: {
-                                    type: 'box',
-                                    xMin: mesAtual - 0.5,
-                                    xMax: mesAtual + 0.5,
-                                    backgroundColor: 'rgba(255, 99, 132, 0.1)',
-                                    borderColor: 'rgba(255, 99, 132, 0.5)',
-                                    borderWidth: 1
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                precision: 0
-                            },
-                            title: {
-                                display: true,
-                                text: 'Quantidade de Cadastros'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Meses do Ano'
-                            }
-                        }
-                    },
-                    interaction: {
-                        mode: 'nearest',
-                        axis: 'x',
-                        intersect: false
-                    }
-                }
-            });
-        }
+            // Atualizar o gráfico quando o ano for alterado
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
 
-        // Carregar dados iniciais
-        renderChart(<?= $dadosGraficoJson ?>, <?= $anoSelecionado ?>);
+                    const ano = this.getAttribute('href').split('=')[1];
 
-        // Atualizar o gráfico quando o ano for alterado
-        document.querySelectorAll('.dropdown-item').forEach(item => {
-            item.addEventListener('click', function(e) {
-                e.preventDefault();
-
-                const ano = this.getAttribute('href').split('=')[1];
-
-                // Mostrar estado de carregamento
-                chartContainer.innerHTML = `
+                    // Mostrar estado de carregamento
+                    chartContainer.innerHTML = `
                 <div class="text-center py-5">
                     <div class="spinner-border text-primary"></div>
                     <p class="mt-2 text-muted">Carregando dados...</p>
                 </div>
             `;
 
-                // Remover classe active de todos os itens
-                document.querySelectorAll('.dropdown-item').forEach(el => {
-                    el.classList.remove('active');
-                });
+                    // Remover classe active de todos os itens
+                    document.querySelectorAll('.dropdown-item').forEach(el => {
+                        el.classList.remove('active');
+                    });
 
-                // Adicionar classe active ao item clicado
-                this.classList.add('active');
+                    // Adicionar classe active ao item clicado
+                    this.classList.add('active');
 
-                // Buscar dados via AJAX
-                fetch(`../api/cadastros_mensais.php?ano=${ano}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Erro na requisição');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (!data.success) {
-                            throw new Error(data.message);
-                        }
+                    // Buscar dados via AJAX
+                    fetch(`../api/cadastros_mensais.php?ano=${ano}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Erro na requisição');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (!data.success) {
+                                throw new Error(data.message);
+                            }
 
-                        // Restaurar canvas
-                        chartContainer.innerHTML = '<canvas id="cadastrosChart"></canvas>';
+                            // Restaurar canvas
+                            chartContainer.innerHTML = '<canvas id="cadastrosChart"></canvas>';
 
-                        // Obter novo contexto
-                        const newCtx = document.getElementById('cadastrosChart').getContext(
-                            '2d');
+                            // Obter novo contexto
+                            const newCtx = document.getElementById('cadastrosChart').getContext(
+                                '2d');
 
-                        // Atualizar gráfico com novos dados
-                        renderChart(data.data, data.ano);
-                    })
-                    .catch(error => {
-                        console.error('Erro:', error);
-                        chartContainer.innerHTML = `
+                            // Atualizar gráfico com novos dados
+                            renderChart(data.data, data.ano);
+                        })
+                        .catch(error => {
+                            console.error('Erro:', error);
+                            chartContainer.innerHTML = `
                         <div class="alert alert-danger">
                             <i class="fas fa-exclamation-triangle me-2"></i>
                             ${error.message || 'Erro ao carregar dados'}
                         </div>
                     `;
 
-                        // Adicionar botão para tentar novamente
-                        const retryBtn = document.createElement('button');
-                        retryBtn.className = 'btn btn-sm btn-primary mt-2';
-                        retryBtn.innerHTML =
-                            '<i class="fas fa-sync-alt me-1"></i> Tentar novamente';
-                        retryBtn.onclick = () => window.location.reload();
-                        chartContainer.querySelector('.alert').appendChild(retryBtn);
-                    });
+                            // Adicionar botão para tentar novamente
+                            const retryBtn = document.createElement('button');
+                            retryBtn.className = 'btn btn-sm btn-primary mt-2';
+                            retryBtn.innerHTML =
+                                '<i class="fas fa-sync-alt me-1"></i> Tentar novamente';
+                            retryBtn.onclick = () => window.location.reload();
+                            chartContainer.querySelector('.alert').appendChild(retryBtn);
+                        });
+                });
             });
         });
-    });
     </script>
 </body>
 

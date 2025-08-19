@@ -473,9 +473,6 @@ function obterAnosDisponiveis($pdo)
 }
 
 
-
-// ... outras funções existentes ...
-
 /**
  * Formata o tamanho do arquivo para leitura humana
  * @param int $bytes Tamanho em bytes
