@@ -61,152 +61,152 @@ if ($formulario) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-    body {
-        background: linear-gradient(135deg, #e3f2fd 0%, #c5cae9 100%);
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .success-card {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        padding: 3rem;
-        text-align: center;
-        max-width: 500px;
-        width: 100%;
-    }
-
-    .success-icon {
-        font-size: 4rem;
-        color: #10b981;
-        margin-bottom: 1.5rem;
-    }
-
-    .btn-primary {
-        background-color: #6366f1;
-        border-color: #6366f1;
-    }
-
-    .btn-primary:hover {
-        background-color: #5855eb;
-        border-color: #5855eb;
-    }
-
-    /* Estilos para a impressão */
-    @page {
-        size: A4;
-        margin: 2cm;
-    }
-
-    @media print {
-        body * {
-            visibility: hidden;
+        body {
+            background: linear-gradient(135deg, #e3f2fd 0%, #c5cae9 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        #printable-area,
-        #printable-area * {
-            visibility: visible;
-        }
-
-        #printable-area {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            padding: 0;
-            margin: 0;
+        .success-card {
             background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 3rem;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
         }
 
-        .no-print {
-            display: none !important;
+        .success-icon {
+            font-size: 4rem;
+            color: #10b981;
+            margin-bottom: 1.5rem;
         }
 
-        .page-break {
-            page-break-after: always;
+        .btn-primary {
+            background-color: #6366f1;
+            border-color: #6366f1;
         }
-    }
 
-    .document-header {
-        border-bottom: 3px solid #2F3D71;
-        padding-bottom: 15px;
-        margin-bottom: 30px;
-    }
+        .btn-primary:hover {
+            background-color: #5855eb;
+            border-color: #5855eb;
+        }
 
-    .document-title {
-        color: #2F3D71;
-        font-weight: bold;
-        text-align: center;
-        margin-bottom: 5px;
-    }
+        /* Estilos para a impressão */
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
 
-    .document-subtitle {
-        color: #555;
-        text-align: center;
-        font-size: 1.1rem;
-        margin-bottom: 20px;
-    }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
 
-    .section-title {
-        color: #2F3D71;
-        border-bottom: 1px solid #ddd;
-        padding-bottom: 5px;
-        margin-top: 25px;
-        margin-bottom: 15px;
-        font-size: 1.2rem;
-    }
+            #printable-area,
+            #printable-area * {
+                visibility: visible;
+            }
 
-    .info-label {
-        font-weight: bold;
-        color: #555;
-        min-width: 180px;
-        display: inline-block;
-    }
+            #printable-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 0;
+                margin: 0;
+                background: white;
+            }
 
-    .info-value {
-        color: #333;
-    }
+            .no-print {
+                display: none !important;
+            }
 
-    .document-footer {
-        margin-top: 40px;
-        padding-top: 15px;
-        border-top: 1px solid #ddd;
-        font-size: 0.9rem;
-        color: #666;
-        text-align: center;
-    }
+            .page-break {
+                page-break-after: always;
+            }
+        }
 
-    .signature-line {
-        border-top: 1px solid #000;
-        width: 300px;
-        margin: 40px auto 10px;
-        text-align: center;
-        padding-top: 5px;
-    }
+        .document-header {
+            border-bottom: 3px solid #2F3D71;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
 
-    .document-container {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 30px;
-        background: white;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
+        .document-title {
+            color: #2F3D71;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 5px;
+        }
 
-    .watermark {
-        position: fixed;
-        opacity: 0.1;
-        font-size: 80px;
-        color: #2F3D71;
-        transform: rotate(-45deg);
-        z-index: -1;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) rotate(-45deg);
-        white-space: nowrap;
-    }
+        .document-subtitle {
+            color: #555;
+            text-align: center;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            color: #2F3D71;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #555;
+            min-width: 180px;
+            display: inline-block;
+        }
+
+        .info-value {
+            color: #333;
+        }
+
+        .document-footer {
+            margin-top: 40px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+        }
+
+        .signature-line {
+            border-top: 1px solid #000;
+            width: 300px;
+            margin: 40px auto 10px;
+            text-align: center;
+            padding-top: 5px;
+        }
+
+        .document-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .watermark {
+            position: fixed;
+            opacity: 0.1;
+            font-size: 80px;
+            color: #2F3D71;
+            transform: rotate(-45deg);
+            z-index: -1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            white-space: nowrap;
+        }
     </style>
 </head>
 
@@ -330,30 +330,30 @@ if ($formulario) {
         </div>
 
         <?php if (!empty($cursos)): ?>
-        <div class="section-title">4. FORMAÇÃO ACADÊMICA</div>
-        <?php foreach ($cursos as $index => $curso): ?>
-        <div class="mb-3 p-3 border" style="page-break-inside: avoid;">
-            <h5 style="color: #2F3D71;">Formação <?= $index + 1 ?></h5>
-            <p><span class="info-label">Nível:</span> <span
-                    class="info-value"><?= htmlspecialchars($curso['nivel'] ?? '') ?></span></p>
-            <p><span class="info-label">Área de Formação:</span> <span
-                    class="info-value"><?= htmlspecialchars($curso['area_formacao'] ?? '') ?></span></p>
-            <?php if (!empty($curso['registro_profissional'])): ?>
-            <p><span class="info-label">Registro Profissional:</span> <span
-                    class="info-value"><?= htmlspecialchars($curso['registro_profissional'] ?? '') ?></span></p>
-            <?php endif; ?>
-        </div>
-        <?php endforeach; ?>
+            <div class="section-title">4. FORMAÇÃO ACADÊMICA</div>
+            <?php foreach ($cursos as $index => $curso): ?>
+                <div class="mb-3 p-3 border" style="page-break-inside: avoid;">
+                    <h5 style="color: #2F3D71;">Formação <?= $index + 1 ?></h5>
+                    <p><span class="info-label">Nível:</span> <span
+                            class="info-value"><?= htmlspecialchars($curso['nivel'] ?? '') ?></span></p>
+                    <p><span class="info-label">Área de Formação:</span> <span
+                            class="info-value"><?= htmlspecialchars($curso['area_formacao'] ?? '') ?></span></p>
+                    <?php if (!empty($curso['registro_profissional'])): ?>
+                        <p><span class="info-label">Registro Profissional:</span> <span
+                                class="info-value"><?= htmlspecialchars($curso['registro_profissional'] ?? '') ?></span></p>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
         <?php endif; ?>
 
         <?php if (!empty($arquivos)): ?>
-        <div class="section-title">5. DOCUMENTOS ENVIADOS</div>
-        <ul>
-            <?php foreach ($arquivos as $arquivo): ?>
-            <li><?= htmlspecialchars($arquivo['nome_original']) ?> (<?= htmlspecialchars($arquivo['tipo_documento']) ?>)
-            </li>
-            <?php endforeach; ?>
-        </ul>
+            <div class="section-title">5. DOCUMENTOS ENVIADOS</div>
+            <ul>
+                <?php foreach ($arquivos as $arquivo): ?>
+                    <li><?= htmlspecialchars($arquivo['nome_original']) ?> (<?= htmlspecialchars($arquivo['tipo_documento']) ?>)
+                    </li>
+                <?php endforeach; ?>
+            </ul>
         <?php endif; ?>
 
         <div class="section-title">6. PITCH VÍDEO</div>
@@ -391,30 +391,30 @@ if ($formulario) {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    // Mostrar a área de impressão apenas quando for imprimir
-    document.addEventListener('DOMContentLoaded', function() {
-        const beforePrint = () => {
-            document.getElementById('printable-area').style.display = 'block';
-        };
+        // Mostrar a área de impressão apenas quando for imprimir
+        document.addEventListener('DOMContentLoaded', function() {
+            const beforePrint = () => {
+                document.getElementById('printable-area').style.display = 'block';
+            };
 
-        const afterPrint = () => {
-            document.getElementById('printable-area').style.display = 'none';
-        };
+            const afterPrint = () => {
+                document.getElementById('printable-area').style.display = 'none';
+            };
 
-        if (window.matchMedia) {
-            const mediaQueryList = window.matchMedia('print');
-            mediaQueryList.addListener((mql) => {
-                if (mql.matches) {
-                    beforePrint();
-                } else {
-                    afterPrint();
-                }
-            });
-        }
+            if (window.matchMedia) {
+                const mediaQueryList = window.matchMedia('print');
+                mediaQueryList.addListener((mql) => {
+                    if (mql.matches) {
+                        beforePrint();
+                    } else {
+                        afterPrint();
+                    }
+                });
+            }
 
-        window.onbeforeprint = beforePrint;
-        window.onafterprint = afterPrint;
-    });
+            window.onbeforeprint = beforePrint;
+            window.onafterprint = afterPrint;
+        });
     </script>
 </body>
 
