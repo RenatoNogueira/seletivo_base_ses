@@ -31,16 +31,6 @@ $stmtFormulario->bindParam(':usuario_id', $usuario_id);
 $stmtFormulario->execute();
 $formulario = $stmtFormulario->fetch();
 
-// Buscar cursos de formação
-$cursos = [];
-if ($formulario) {
-    $queryCursos = "SELECT * FROM cursos_formacoes WHERE formulario_id = :formulario_id";
-    $stmtCursos = $db->prepare($queryCursos);
-    $stmtCursos->bindParam(':formulario_id', $formulario['id']);
-    $stmtCursos->execute();
-    $cursos = $stmtCursos->fetchAll(PDO::FETCH_ASSOC);
-}
-
 // Buscar arquivos enviados
 $arquivos = [];
 if ($formulario) {
@@ -287,7 +277,7 @@ if ($formulario) {
             </div>
             <div class="col-md-6">
                 <p><span class="info-label">Data Nascimento:</span> <span
-                        class="info-value"><?= date('d/m/Y', strtotime($usuario['data_nascimento'])) ?></span></p>
+                        class="info-value"><?= $usuario['data_nascimento'] ? date('d/m/Y', strtotime($usuario['data_nascimento'])) : '' ?></span></p>
                 <p><span class="info-label">Estado Civil:</span> <span
                         class="info-value"><?= htmlspecialchars($usuario['estado_civil'] ?? '') ?></span></p>
                 <p><span class="info-label">Nacionalidade:</span> <span
@@ -315,73 +305,103 @@ if ($formulario) {
         <div class="row">
             <div class="col-12">
                 <p><span class="info-label">Logradouro:</span> <span
-                        class="info-value"><?= htmlspecialchars($formulario['logradouro'] ?? '') ?>,
-                        <?= htmlspecialchars($formulario['numero'] ?? '') ?></span></p>
+                        class="info-value"><?= htmlspecialchars($formulario['logradouro'] ?? '') ?><?= !empty($formulario['numero']) ? ', ' . htmlspecialchars($formulario['numero']) : '' ?></span></p>
                 <p><span class="info-label">Complemento:</span> <span
                         class="info-value"><?= htmlspecialchars($formulario['complemento'] ?? '') ?></span></p>
                 <p><span class="info-label">Bairro:</span> <span
                         class="info-value"><?= htmlspecialchars($formulario['bairro'] ?? '') ?></span></p>
                 <p><span class="info-label">Cidade/Estado:</span> <span
-                        class="info-value"><?= htmlspecialchars($formulario['cidade'] ?? '') ?>/<?= htmlspecialchars($formulario['estado'] ?? '') ?></span>
+                        class="info-value"><?= htmlspecialchars($formulario['cidade'] ?? '') ?><?= !empty($formulario['estado']) ? '/' . htmlspecialchars($formulario['estado']) : '' ?></span>
                 </p>
                 <p><span class="info-label">CEP:</span> <span
                         class="info-value"><?= htmlspecialchars($formulario['cep'] ?? '') ?></span></p>
             </div>
         </div>
 
-        <?php if (!empty($cursos)): ?>
-            <div class="section-title">4. FORMAÇÃO ACADÊMICA</div>
-            <?php foreach ($cursos as $index => $curso): ?>
-                <div class="mb-3 p-3 border" style="page-break-inside: avoid;">
-                    <h5 style="color: #2F3D71;">Formação <?= $index + 1 ?></h5>
-                    <p><span class="info-label">Nível:</span> <span
-                            class="info-value"><?= htmlspecialchars($curso['nivel'] ?? '') ?></span></p>
-                    <p><span class="info-label">Área de Formação:</span> <span
-                            class="info-value"><?= htmlspecialchars($curso['area_formacao'] ?? '') ?></span></p>
-                    <?php if (!empty($curso['registro_profissional'])): ?>
-                        <p><span class="info-label">Registro Profissional:</span> <span
-                                class="info-value"><?= htmlspecialchars($curso['registro_profissional'] ?? '') ?></span></p>
-                    <?php endif; ?>
-                </div>
-            <?php endforeach; ?>
-        <?php endif; ?>
+        <div class="section-title">4. INFORMAÇÕES ADICIONAIS</div>
+        <div class="row">
+            <div class="col-md-6">
+                <p><span class="info-label">Órgão Expedidor (RG):</span> <span
+                        class="info-value"><?= htmlspecialchars($formulario['orgao_expedidor'] ?? '') ?></span></p>
+                <p><span class="info-label">Título de Eleitor:</span> <span
+                        class="info-value"><?= htmlspecialchars($formulario['titulo_eleitor'] ?? '') ?></span></p>
+                <p><span class="info-label">PIS/PASEP:</span> <span
+                        class="info-value"><?= htmlspecialchars($formulario['pis_pasep'] ?? '') ?></span></p>
+            </div>
+            <div class="col-md-6">
+                <p><span class="info-label">Certificado Reservista:</span> <span
+                        class="info-value"><?= htmlspecialchars($formulario['certificado_reservista'] ?? '') ?></span></p>
+                <p><span class="info-label">Sexo:</span> <span
+                        class="info-value"><?= htmlspecialchars($formulario['sexo'] ?? '') ?></span></p>
+                <p><span class="info-label">PcD:</span> <span
+                        class="info-value"><?= ($formulario['pcd'] ?? 0) ? 'Sim' : 'Não' ?></span></p>
+            </div>
+        </div>
+
+        <div class="section-title">5. FORMAÇÃO E CONCORRÊNCIA</div>
+        <div class="row">
+            <div class="col-md-6">
+                <p><span class="info-label">Pós-Graduação:</span> <span
+                        class="info-value"><?= htmlspecialchars($formulario['pos_graduacao'] ?? '') ?></span></p>
+                <p><span class="info-label">Tipo de Concorrência:</span> <span
+                        class="info-value"><?= htmlspecialchars($formulario['tipo_concorrencia'] ?? '') ?></span></p>
+            </div>
+            <div class="col-md-6">
+                <p><span class="info-label">Tipo de Funcionário:</span> <span
+                        class="info-value"><?= htmlspecialchars($formulario['tipo_funcionario'] ?? '') ?></span></p>
+            </div>
+        </div>
 
         <?php if (!empty($arquivos)): ?>
-            <div class="section-title">5. DOCUMENTOS ENVIADOS</div>
-            <ul>
-                <?php foreach ($arquivos as $arquivo): ?>
-                    <li><?= htmlspecialchars($arquivo['nome_original']) ?> (<?= htmlspecialchars($arquivo['tipo_documento']) ?>)
-                    </li>
-                <?php endforeach; ?>
-            </ul>
+        <div class="section-title">6. DOCUMENTOS ENVIADOS</div>
+        <ul>
+            <?php foreach ($arquivos as $arquivo): ?>
+                <li>
+                    <?= htmlspecialchars($arquivo['nome_original'] ?? $arquivo['nome_salvo'] ?? 'Arquivo') ?> 
+                    <?php if (!empty($arquivo['tipo_documento'])): ?>
+                        (<?= htmlspecialchars($arquivo['tipo_documento']) ?>)
+                    <?php endif; ?>
+                </li>
+            <?php endforeach; ?>
+        </ul>
         <?php endif; ?>
 
-        <div class="section-title">6. PITCH VÍDEO</div>
+        <?php if (!empty($formulario['link_video'])): ?>
+        <div class="section-title">7. PITCH VÍDEO</div>
         <p><span class="info-label">Link do vídeo:</span> <span
-                class="info-value"><?= htmlspecialchars($formulario['link_video'] ?? '') ?></span></p>
+                class="info-value"><?= htmlspecialchars($formulario['link_video']) ?></span></p>
+        <?php endif; ?>
 
-        <div class="section-title">7. RESPOSTAS PGS</div>
+        <?php if (!empty($formulario['objetivo_pgs']) || !empty($formulario['atividades_pgs']) || !empty($formulario['contribuicao_pgs'])): ?>
+        <div class="section-title">8. RESPOSTAS PGS</div>
 
+        <?php if (!empty($formulario['objetivo_pgs'])): ?>
         <div class="mb-4">
             <h5 style="color: #555;">Objetivo de participar do PGS</h5>
             <div style="border: 1px solid #eee; padding: 10px; background: #f9f9f9; min-height: 100px;">
-                <?= nl2br(htmlspecialchars($formulario['objetivo_pgs'] ?? '')) ?>
+                <?= nl2br(htmlspecialchars($formulario['objetivo_pgs'])) ?>
             </div>
         </div>
+        <?php endif; ?>
 
+        <?php if (!empty($formulario['atividades_pgs'])): ?>
         <div class="mb-4">
             <h5 style="color: #555;">Atividades e funções no PGS</h5>
             <div style="border: 1px solid #eee; padding: 10px; background: #f9f9f9; min-height: 100px;">
-                <?= nl2br(htmlspecialchars($formulario['atividades_pgs'] ?? '')) ?>
+                <?= nl2br(htmlspecialchars($formulario['atividades_pgs'])) ?>
             </div>
         </div>
+        <?php endif; ?>
 
+        <?php if (!empty($formulario['contribuicao_pgs'])): ?>
         <div class="mb-4">
             <h5 style="color: #555;">Contribuição para a gestão da saúde pública</h5>
             <div style="border: 1px solid #eee; padding: 10px; background: #f9f9f9; min-height: 100px;">
-                <?= nl2br(htmlspecialchars($formulario['contribuicao_pgs'] ?? '')) ?>
+                <?= nl2br(htmlspecialchars($formulario['contribuicao_pgs'])) ?>
             </div>
         </div>
+        <?php endif; ?>
+        <?php endif; ?>
 
         <div class="document-footer">
             <p>Documento gerado automaticamente em <?= date('d/m/Y H:i:s') ?></p>

@@ -49,17 +49,37 @@ if ($stmtFormulario->rowCount() > 0) {
 
     if ($formulario['rascunho_data']) {
         $rascunho = json_decode($formulario['rascunho_data'], true) ?? [];
-        $cursosExistentes = $rascunho['cursos'] ?? [];
     } else {
-        // Carregar cursos de cursos_formacoes se não for rascunho
-        $queryCursos = "SELECT * FROM cursos_formacoes WHERE formulario_id = :formulario_id";
-        $stmtCursos = $db->prepare($queryCursos);
-        $stmtCursos->bindParam(':formulario_id', $formulario['id']);
-        $stmtCursos->execute();
-        $cursosExistentes = $stmtCursos->fetchAll(PDO::FETCH_ASSOC);
+        // Carregar dados do formulário finalizado
+        $rascunho = [
+            'orgao_expedidor' => $formulario['orgao_expedidor'] ?? '',
+            'titulo_eleitor' => $formulario['titulo_eleitor'] ?? '',
+            'pis_pasep' => $formulario['pis_pasep'] ?? '',
+            'certificado_reservista' => $formulario['certificado_reservista'] ?? '',
+            'sexo' => $formulario['sexo'] ?? '',
+            'pcd' => $formulario['pcd'] ?? '',
+            'tipo_concorrencia' => $formulario['tipo_concorrencia'] ?? '',
+            'tipo_funcionario' => $formulario['tipo_funcionario'] ?? '',
+            'pos_graduacao' => $formulario['pos_graduacao'] ?? '',
+            'nome_completo' => $formulario['nome_completo'] ?? '',
+            'rg' => $formulario['rg'] ?? '',
+            'telefone_fixo' => $formulario['telefone_fixo'] ?? '',
+            'celular' => $formulario['celular'] ?? '',
+            'email' => $formulario['email'] ?? '',
+            'email_alternativo' => $formulario['email_alternativo'] ?? '',
+            'cep' => $formulario['cep'] ?? '',
+            'logradouro' => $formulario['logradouro'] ?? '',
+            'numero' => $formulario['numero'] ?? '',
+            'complemento' => $formulario['complemento'] ?? '',
+            'bairro' => $formulario['bairro'] ?? '',
+            'cidade' => $formulario['cidade'] ?? '',
+            'estado' => $formulario['estado'] ?? ''
+        ];
     }
+}
 
-    // Carregar últimos arquivos por tipo
+// Carregar últimos arquivos por tipo
+if ($formulario) {
     $stmtArquivos = $db->prepare("
         SELECT a1.*
         FROM arquivos_upload a1
@@ -78,26 +98,22 @@ if ($stmtFormulario->rowCount() > 0) {
     $arquivos = $stmtArquivos->fetchAll(PDO::FETCH_ASSOC);
 }
 
-if (empty($cursosExistentes)) {
-    $cursosExistentes = [[
-        'nivel' => '',
-        'area_formacao' => '',
-        'registro_profissional' => '',
-    ]];
-}
-
 // ======================== PROCESSAR FORMULÁRIO ========================
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $acao = $_POST['acao'] ?? '';
 
     if ($acao == 'salvar_rascunho') {
         try {
-            // Salvar rascunho
+            // Salvar rascunho com os novos campos
             $rascunhoData = [
                 'nome_completo' => sanitizar($_POST['nome_completo'] ?? ''),
                 'rg' => sanitizar($_POST['rg'] ?? ''),
-                'estado_civil' => sanitizar($_POST['estado_civil'] ?? ''),
-                'nacionalidade' => sanitizar($_POST['nacionalidade'] ?? ''),
+                'orgao_expedidor' => sanitizar($_POST['orgao_expedidor'] ?? ''),
+                'titulo_eleitor' => sanitizar($_POST['titulo_eleitor'] ?? ''),
+                'pis_pasep' => sanitizar($_POST['pis_pasep'] ?? ''),
+                'certificado_reservista' => sanitizar($_POST['certificado_reservista'] ?? ''),
+                'sexo' => sanitizar($_POST['sexo'] ?? ''),
+                'pcd' => sanitizar($_POST['pcd'] ?? ''),
                 'telefone_fixo' => sanitizar($_POST['telefone_fixo'] ?? ''),
                 'celular' => sanitizar($_POST['celular'] ?? ''),
                 'email' => sanitizar($_POST['email'] ?? ''),
@@ -109,11 +125,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 'bairro' => sanitizar($_POST['bairro'] ?? ''),
                 'cidade' => sanitizar($_POST['cidade'] ?? ''),
                 'estado' => sanitizar($_POST['estado'] ?? ''),
-                'link_video' => sanitizar($_POST['link_video'] ?? ''),
-                'objetivo_pgs' => sanitizar($_POST['objetivo_pgs'] ?? ''),
-                'atividades_pgs' => sanitizar($_POST['atividades_pgs'] ?? ''),
-                'contribuicao_pgs' => sanitizar($_POST['contribuicao_pgs'] ?? ''),
-                'cursos' => $_POST['cursos'] ?? []
+                'tipo_concorrencia' => sanitizar($_POST['tipo_concorrencia'] ?? ''),
+                'tipo_funcionario' => sanitizar($_POST['tipo_funcionario'] ?? ''),
+                'pos_graduacao' => sanitizar($_POST['pos_graduacao'] ?? '')
             ];
 
             $rascunhoJson = json_encode($rascunhoData);
@@ -161,7 +175,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $erros = [];
         $camposObrigatorios = [];
 
+        // Novos campos obrigatórios
         $nomeCompleto = sanitizar($_POST['nome_completo'] ?? '');
+        $rg = sanitizar($_POST['rg'] ?? '');
+        $orgaoExpedidor = sanitizar($_POST['orgao_expedidor'] ?? '');
+        $tituloEleitor = sanitizar($_POST['titulo_eleitor'] ?? '');
+        $sexo = sanitizar($_POST['sexo'] ?? '');
         $email = sanitizar($_POST['email'] ?? '');
         $celular = sanitizar($_POST['celular'] ?? '');
         $cep = sanitizar($_POST['cep'] ?? '');
@@ -170,14 +189,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $bairro = sanitizar($_POST['bairro'] ?? '');
         $cidade = sanitizar($_POST['cidade'] ?? '');
         $estado = sanitizar($_POST['estado'] ?? '');
-        $objetivoPgs = sanitizar($_POST['objetivo_pgs'] ?? '');
-        $atividadesPgs = sanitizar($_POST['atividades_pgs'] ?? '');
-        $contribuicaoPgs = sanitizar($_POST['contribuicao_pgs'] ?? '');
+        $tipoConcorrencia = sanitizar($_POST['tipo_concorrencia'] ?? '');
+        $tipoFuncionario = sanitizar($_POST['tipo_funcionario'] ?? '');
+        $posGraduacao = sanitizar($_POST['pos_graduacao'] ?? '');
 
         // Validação de campos obrigatórios
         if (empty($nomeCompleto)) {
             $erros[] = 'Nome completo é obrigatório.';
             $camposObrigatorios[] = 'nome_completo';
+        }
+        if (empty($rg)) {
+            $erros[] = 'RG é obrigatório.';
+            $camposObrigatorios[] = 'rg';
+        }
+        if (empty($orgaoExpedidor)) {
+            $erros[] = 'Órgão expedidor é obrigatório.';
+            $camposObrigatorios[] = 'orgao_expedidor';
+        }
+        if (empty($tituloEleitor)) {
+            $erros[] = 'Título eleitoral é obrigatório.';
+            $camposObrigatorios[] = 'titulo_eleitor';
+        }
+        if (empty($sexo)) {
+            $erros[] = 'Sexo é obrigatório.';
+            $camposObrigatorios[] = 'sexo';
         }
         if (empty($email) || !validarEmail($email)) {
             $erros[] = 'Email válido é obrigatório.';
@@ -211,17 +246,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $erros[] = 'Estado é obrigatório.';
             $camposObrigatorios[] = 'estado';
         }
-        if (empty($objetivoPgs)) {
-            $erros[] = 'Objetivo de participar do PGS é obrigatório.';
-            $camposObrigatorios[] = 'objetivo_pgs';
+        if (empty($tipoConcorrencia)) {
+            $erros[] = 'Tipo de concorrência é obrigatório.';
+            $camposObrigatorios[] = 'tipo_concorrencia';
         }
-        if (empty($atividadesPgs)) {
-            $erros[] = 'Atividades e funções no PGS são obrigatórias.';
-            $camposObrigatorios[] = 'atividades_pgs';
+        if (empty($tipoFuncionario)) {
+            $erros[] = 'Tipo de funcionário é obrigatório.';
+            $camposObrigatorios[] = 'tipo_funcionario';
         }
-        if (empty($contribuicaoPgs)) {
-            $erros[] = 'Contribuição para a gestão da saúde pública é obrigatória.';
-            $camposObrigatorios[] = 'contribuicao_pgs';
+        if (empty($posGraduacao)) {
+            $erros[] = 'Seleção da pós-graduação é obrigatória.';
+            $camposObrigatorios[] = 'pos_graduacao';
         }
 
         // Armazenar campos com erro na sessão para destacar no frontend
@@ -232,8 +267,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $queryUpdateUsuario = "UPDATE usuarios SET
                 nome_completo = :nome_completo,
                 rg = :rg,
-                estado_civil = :estado_civil,
-                nacionalidade = :nacionalidade,
                 telefone_fixo = :telefone_fixo,
                 celular = :celular,
                 email = :email,
@@ -242,22 +275,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $stmtUpdateUsuario = $db->prepare($queryUpdateUsuario);
             $stmtUpdateUsuario->bindParam(':nome_completo', $nomeCompleto);
-
-            $rg = sanitizar($_POST['rg'] ?? '');
             $stmtUpdateUsuario->bindParam(':rg', $rg);
-
-            $estadoCivil = sanitizar($_POST['estado_civil'] ?? '');
-            $stmtUpdateUsuario->bindParam(':estado_civil', $estadoCivil);
-
-            $nacionalidade = sanitizar($_POST['nacionalidade'] ?? '');
-            $stmtUpdateUsuario->bindParam(':nacionalidade', $nacionalidade);
-
+            
             $telefoneFixo = sanitizar($_POST['telefone_fixo'] ?? '');
             $stmtUpdateUsuario->bindParam(':telefone_fixo', $telefoneFixo);
-
+            
             $stmtUpdateUsuario->bindParam(':celular', $celular);
             $stmtUpdateUsuario->bindParam(':email', $email);
-
+            
             $emailAlternativo = sanitizar($_POST['email_alternativo'] ?? '');
             $stmtUpdateUsuario->bindParam(':email_alternativo', $emailAlternativo);
             $stmtUpdateUsuario->bindParam(':id', $_SESSION['usuario_id']);
@@ -266,7 +291,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Inserir/atualizar formulário
             if ($formulario) {
                 $queryUpdateForm = "UPDATE formularios SET
-                    link_video = :link_video,
+                    orgao_expedidor = :orgao_expedidor,
+                    titulo_eleitor = :titulo_eleitor,
+                    pis_pasep = :pis_pasep,
+                    certificado_reservista = :certificado_reservista,
+                    sexo = :sexo,
+                    pcd = :pcd,
                     cep = :cep,
                     logradouro = :logradouro,
                     numero = :numero,
@@ -274,9 +304,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     bairro = :bairro,
                     cidade = :cidade,
                     estado = :estado,
-                    objetivo_pgs = :objetivo_pgs,
-                    atividades_pgs = :atividades_pgs,
-                    contribuicao_pgs = :contribuicao_pgs,
+                    tipo_concorrencia = :tipo_concorrencia,
+                    tipo_funcionario = :tipo_funcionario,
+                    pos_graduacao = :pos_graduacao,
                     submitted_at = CURRENT_TIMESTAMP,
                     rascunho_data = NULL
                     WHERE id = :id";
@@ -286,13 +316,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $formularioId = $formulario['id'];
             } else {
                 $queryInsertForm = "INSERT INTO formularios (
-                    usuario_id, link_video,
-                    cep, logradouro, numero, complemento, bairro, cidade, estado,
-                    objetivo_pgs, atividades_pgs, contribuicao_pgs
+                    usuario_id, orgao_expedidor, titulo_eleitor, pis_pasep, certificado_reservista,
+                    sexo, pcd, cep, logradouro, numero, complemento, bairro, cidade, estado,
+                    tipo_concorrencia, tipo_funcionario, pos_graduacao
                 ) VALUES (
-                    :usuario_id, :link_video,
-                    :cep, :logradouro, :numero, :complemento, :bairro, :cidade, :estado,
-                    :objetivo_pgs, :atividades_pgs, :contribuicao_pgs
+                    :usuario_id, :orgao_expedidor, :titulo_eleitor, :pis_pasep, :certificado_reservista,
+                    :sexo, :pcd, :cep, :logradouro, :numero, :complemento, :bairro, :cidade, :estado,
+                    :tipo_concorrencia, :tipo_funcionario, :pos_graduacao
                 )";
 
                 $stmtUpdateForm = $db->prepare($queryInsertForm);
@@ -300,69 +330,39 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $formularioId = null;
             }
 
-            $linkVideo = sanitizar($_POST['link_video'] ?? '');
-            $stmtUpdateForm->bindParam(':link_video', $linkVideo);
-
-            $cep = sanitizar($_POST['cep'] ?? '');
+            // Bind dos novos parâmetros
+            $stmtUpdateForm->bindParam(':orgao_expedidor', $orgaoExpedidor);
+            $stmtUpdateForm->bindParam(':titulo_eleitor', $tituloEleitor);
+            
+            $pisPasep = sanitizar($_POST['pis_pasep'] ?? '');
+            $stmtUpdateForm->bindParam(':pis_pasep', $pisPasep);
+            
+            $certificadoReservista = sanitizar($_POST['certificado_reservista'] ?? '');
+            $stmtUpdateForm->bindParam(':certificado_reservista', $certificadoReservista);
+            
+            $stmtUpdateForm->bindParam(':sexo', $sexo);
+            
+            $pcd = isset($_POST['pcd']) ? 1 : 0;
+            $stmtUpdateForm->bindParam(':pcd', $pcd);
+            
             $stmtUpdateForm->bindParam(':cep', $cep);
-
-            $logradouro = sanitizar($_POST['logradouro'] ?? '');
             $stmtUpdateForm->bindParam(':logradouro', $logradouro);
-
-            $numero = sanitizar($_POST['numero'] ?? '');
             $stmtUpdateForm->bindParam(':numero', $numero);
-
+            
             $complemento = sanitizar($_POST['complemento'] ?? '');
             $stmtUpdateForm->bindParam(':complemento', $complemento);
-
-            $bairro = sanitizar($_POST['bairro'] ?? '');
+            
             $stmtUpdateForm->bindParam(':bairro', $bairro);
-
-            $cidade = sanitizar($_POST['cidade'] ?? '');
             $stmtUpdateForm->bindParam(':cidade', $cidade);
-
-            $estado = sanitizar($_POST['estado'] ?? '');
             $stmtUpdateForm->bindParam(':estado', $estado);
-
-            $stmtUpdateForm->bindParam(':objetivo_pgs', $objetivoPgs);
-            $stmtUpdateForm->bindParam(':atividades_pgs', $atividadesPgs);
-            $stmtUpdateForm->bindParam(':contribuicao_pgs', $contribuicaoPgs);
+            $stmtUpdateForm->bindParam(':tipo_concorrencia', $tipoConcorrencia);
+            $stmtUpdateForm->bindParam(':tipo_funcionario', $tipoFuncionario);
+            $stmtUpdateForm->bindParam(':pos_graduacao', $posGraduacao);
 
             $stmtUpdateForm->execute();
 
             if (!$formularioId) {
                 $formularioId = $db->lastInsertId();
-            }
-
-            // Processar áreas de formação
-            if (isset($_POST['cursos']) && is_array($_POST['cursos'])) {
-                // Remover cursos existentes
-                $queryDeleteCursos = "DELETE FROM cursos_formacoes WHERE formulario_id = :formulario_id";
-                $stmtDeleteCursos = $db->prepare($queryDeleteCursos);
-                $stmtDeleteCursos->bindParam(':formulario_id', $formularioId);
-                $stmtDeleteCursos->execute();
-
-                // Inserir novas áreas de formação
-                foreach ($_POST['cursos'] as $curso) {
-                    $nivel = sanitizar($curso['nivel'] ?? '');
-                    $areaFormacao = sanitizar($curso['area_formacao'] ?? $curso['area_formacao_texto'] ?? '');
-                    $registroProfissional = sanitizar($curso['registro_profissional'] ?? '');
-
-                    if (!empty($nivel) && !empty($areaFormacao)) {
-                        $queryInsertCurso = "INSERT INTO cursos_formacoes (
-                            formulario_id, nivel, area_formacao, registro_profissional
-                        ) VALUES (
-                            :formulario_id, :nivel, :area_formacao, :registro_profissional
-                        )";
-
-                        $stmtInsertCurso = $db->prepare($queryInsertCurso);
-                        $stmtInsertCurso->bindParam(':formulario_id', $formularioId);
-                        $stmtInsertCurso->bindParam(':nivel', $nivel);
-                        $stmtInsertCurso->bindParam(':area_formacao', $areaFormacao);
-                        $stmtInsertCurso->bindParam(':registro_profissional', $registroProfissional);
-                        $stmtInsertCurso->execute();
-                    }
-                }
             }
 
             redirecionar('sucesso.php');
