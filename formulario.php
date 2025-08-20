@@ -44,7 +44,7 @@ date_default_timezone_set('America/Sao_Paulo');
             </div>
 
 
-            <div class="card-body p-4">
+            <div class="card-body p-3">
                 <div id="saveStatus" class="text-muted mb-3"></div>
 
                 <form method="POST" id="formularioForm" enctype="multipart/form-data">
@@ -68,49 +68,84 @@ date_default_timezone_set('America/Sao_Paulo');
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label for="cpf" class="form-label">CPF</label>
+                                <label for="cpf" class="form-label">CPF *</label>
                                 <input type="text" class="form-control" id="cpf" name="cpf"
                                     value="<?= formatarCPF($usuario['cpf']) ?>" readonly>
                             </div>
 
-                            <div class="col-md-6 mb-3">
-                                <label for="rg" class="form-label">RG</label>
+                            <div class="col-md-3 mb-3">
+                                <label for="rg" class="form-label">RG *</label>
                                 <input type="text" class="form-control" id="rg" name="rg"
                                     value="<?= htmlspecialchars($rascunho['rg'] ?? $usuario['rg'] ?? '') ?>">
                             </div>
 
+                            <div class="col-md-3 mb-3">
+                                <label for="orgao_expedidor" class="form-label">Órgão Expedidor *</label>
+                                <input type="text" class="form-control" id="orgao_expedidor" name="orgao_expedidor"
+                                    value="<?= htmlspecialchars($rascunho['orgao_expedidor'] ?? $usuario['orgao_expedidor'] ?? '') ?>">
+                            </div>
+
                             <div class="col-md-6 mb-3">
-                                <label for="data_nascimento" class="form-label">Data de Nascimento</label>
+                                <label for="titulo_eleitor" class="form-label">Título Eleitoral *</label>
+                                <input type="text" class="form-control" id="titulo_eleitor" name="titulo_eleitor"
+                                    value="<?= htmlspecialchars($rascunho['titulo_eleitor'] ?? $usuario['titulo_eleitor'] ?? '') ?>">
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label for="pis_pasep" class="form-label">PIS/PASEP</label>
+                                <input type="text" class="form-control" id="pis_pasep" name="pis_pasep"
+                                    value="<?= htmlspecialchars($rascunho['pis_pasep'] ?? $usuario['pis_pasep'] ?? '') ?>">
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label for="certificado_reservista" class="form-label">Certificado de Reservista</label>
+                                <input type="text" class="form-control" id="certificado_reservista" name="certificado_reservista"
+                                    value="<?= htmlspecialchars($rascunho['certificado_reservista'] ?? $usuario['certificado_reservista'] ?? '') ?>">
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label for="data_nascimento" class="form-label">Data de Nascimento *</label>
                                 <input type="date" class="form-control" id="data_nascimento" name="data_nascimento"
                                     value="<?= $usuario['data_nascimento'] ?>" readonly>
                             </div>
 
-                            <div class="col-md-6 mb-3">
-                                <label for="estado_civil" class="form-label">Estado Civil</label>
-                                <select class="form-select" id="estado_civil" name="estado_civil">
+                            <div class="col-md-3 mb-3">
+                                <label for="sexo" class="form-label">Sexo *</label>
+                                <select class="form-select" id="sexo" name="sexo">
                                     <option value="">Selecione...</option>
-                                    <option value="Solteiro(a)"
-                                        <?= ($rascunho['estado_civil'] ?? $usuario['estado_civil'] ?? '') == 'Solteiro(a)' ? 'selected' : '' ?>>
-                                        Solteiro(a)</option>
-                                    <option value="Casado(a)"
-                                        <?= ($rascunho['estado_civil'] ?? $usuario['estado_civil'] ?? '') == 'Casado(a)' ? 'selected' : '' ?>>
-                                        Casado(a)</option>
-                                    <option value="Divorciado(a)"
-                                        <?= ($rascunho['estado_civil'] ?? $usuario['estado_civil'] ?? '') == 'Divorciado(a)' ? 'selected' : '' ?>>
-                                        Divorciado(a)</option>
-                                    <option value="Viúvo(a)"
-                                        <?= ($rascunho['estado_civil'] ?? $usuario['estado_civil'] ?? '') == 'Viúvo(a)' ? 'selected' : '' ?>>
-                                        Viúvo(a)</option>
-                                    <option value="União Estável"
-                                        <?= ($rascunho['estado_civil'] ?? $usuario['estado_civil'] ?? '') == 'União Estável' ? 'selected' : '' ?>>
-                                        União Estável</option>
+                                    <option value="Masculino"
+                                        <?= ($rascunho['sexo'] ?? $usuario['sexo'] ?? '') == 'Masculino' ? 'selected' : '' ?>>
+                                        Masculino</option>
+                                    <option value="Feminino"
+                                        <?= ($rascunho['sexo'] ?? $usuario['sexo'] ?? '') == 'Feminino' ? 'selected' : '' ?>>
+                                        Feminino</option>
+                                    <option value="Não Binário"
+                                        <?= ($rascunho['sexo'] ?? $usuario['sexo'] ?? '') == 'Não Binário' ? 'selected' : '' ?>>
+                                        Não Binário</option>
+                                    <option value="Outro"
+                                        <?= ($rascunho['sexo'] ?? $usuario['sexo'] ?? '') == 'Outro' ? 'selected' : '' ?>>
+                                        Outro</option>
+                                    <option value="Prefiro não informar"
+                                        <?= ($rascunho['sexo'] ?? $usuario['sexo'] ?? '') == 'Prefiro não informar' ? 'selected' : '' ?>>
+                                        Prefiro não informar</option>
                                 </select>
                             </div>
-
+                            <!-- Campo Nacionalidade
                             <div class="col-md-6 mb-3">
                                 <label for="nacionalidade" class="form-label">Nacionalidade</label>
                                 <input type="text" class="form-control" id="nacionalidade" name="nacionalidade"
                                     value="<?= htmlspecialchars($rascunho['nacionalidade'] ?? $usuario['nacionalidade'] ?? 'Brasileira') ?>">
+                            </div>-->
+                        </div>
+                                            <!-- Campo PcD -->
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="pcd" name="pcd" value="1"
+                                    <?= ($rascunho['pcd'] ?? $formulario['pcd'] ?? '') ? 'checked' : '' ?>
+                                    onchange="togglePcdFields()">
+                                <label class="form-check-label  " for="pcd">
+                                    Pessoa com Deficiência (PcD)
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -119,34 +154,7 @@ date_default_timezone_set('America/Sao_Paulo');
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    <!-- Campo PcD -->
-                    <div class="col-md-6 mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="pcd" name="pcd" value="1"
-                                <?= ($rascunho['pcd'] ?? $formulario['pcd'] ?? '') ? 'checked' : '' ?>
-                                onchange="togglePcdFields()">
-                            <label class="form-check-label  " for="pcd">
-                                Pessoa com Deficiência (PcD)
-                            </label>
-                        </div>
-                    </div>
-
-
-
-                    <!-- Campos PcD (inicialmente ocultos) -->
+                    <!-- Campos PcD (inicialmente ocultos) 
                     <div id="pcdFields" class="mb-5"
                         style="display: <?= ($rascunho['pcd'] ?? $formulario['pcd'] ?? '') ? 'block' : 'none' ?>;">
                         <h4 class="text-primary mb-3">
@@ -207,7 +215,7 @@ date_default_timezone_set('America/Sao_Paulo');
                                     placeholder="Descreva recursos, adaptações ou apoios necessários..."><?= htmlspecialchars($rascunho['necessidades_apoio'] ?? $formulario['necessidades_apoio'] ?? '') ?></textarea>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
 
 
 
@@ -402,7 +410,7 @@ date_default_timezone_set('America/Sao_Paulo');
                         </div>
                     </div>
 
-                    <!-- Área de Formação -->
+                    <!-- Área de Formação -
                     <div class="mb-5">
                         <h4 class="text-primary mb-3">
                             <i class="fas fa-graduation-cap me-2"></i>Área de Formação
@@ -467,9 +475,76 @@ date_default_timezone_set('America/Sao_Paulo');
                                 </div>
                             <?php endforeach; ?>
                         </div>
-                    </div>
+                    </div>-->
+                    <!-- Seleção de Pós-Graduação -->
+                            <div class="mb-5">
+                                <h4 class="text-primary mb-3">
+                                    <i class="fas fa-graduation-cap me-2"></i>Seleção de Pós-Graduação
+                                </h4>
 
-                    <!-- Link do Pitch Vídeo -->
+                                <div class="row">
+                                    <!-- Tipo de Concorrência -->
+                                    <div class="col-md-6 mb-4">
+                                        <label class="form-label fw-bold">Tipo de Concorrência *</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="tipo_concorrencia" id="ampla_concorrencia" 
+                                                value="Ampla Concorrência" required 
+                                                <?= ($rascunho['tipo_concorrencia'] ?? '') == 'Ampla Concorrência' ? 'checked' : '' ?>>
+                                            <label class="form-check-label" for="ampla_concorrencia">
+                                                Ampla Concorrência
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="tipo_concorrencia" id="cota" 
+                                                value="Cota" <?= ($rascunho['tipo_concorrencia'] ?? '') == 'Cota' ? 'checked' : '' ?>>
+                                            <label class="form-check-label" for="cota">
+                                                Por Cota
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tipo de Funcionário -->
+                                    <div class="col-md-6 mb-4">
+                                        <label class="form-label fw-bold">Tipo de Funcionário *</label>
+                
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="tipo_funcionario" id="estadual" 
+                                                value="Estadual" <?= ($rascunho['tipo_funcionario'] ?? '') == 'Estadual' ? 'checked' : '' ?>>
+                                            <label class="form-check-label" for="estadual">
+                                                Funcionário do Estado
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="tipo_funcionario" id="municipal" 
+                                                value="Municipal" <?= ($rascunho['tipo_funcionario'] ?? '') == 'Municipal' ? 'checked' : '' ?>>
+                                            <label class="form-check-label" for="municipal">
+                                                Funcionário do Município
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Seleção da Pós-Graduação -->
+                                <div class="mb-4">
+                                    <label for="pos_graduacao" class="form-label fw-bold">Selecione a Pós-Graduação desejada *</label>
+                                    <select class="form-select" id="pos_graduacao" name="pos_graduacao" required>
+                                        <option value="">Selecione uma opção...</option>
+                                        <option value="Vigilancia Laboratorial (SLZ)" 
+                                            <?= ($rascunho['pos_graduacao'] ?? '') == 'Vigilancia Laboratorial (SLZ)' ? 'selected' : '' ?>>Vigilância Laboratorial (SLZ)</option>
+                                        <option value="Vigilancia Laboratorial (ITZ)" 
+                                            <?= ($rascunho['pos_graduacao'] ?? '') == 'Vigilancia Laboratorial (ITZ)' ? 'selected' : '' ?>>Vigilância Laboratorial (ITZ)</option>
+                                        <option value="Intervenções Multidisciplinares para autismo e outras neurodiversidades (SLZ)" 
+                                            <?= ($rascunho['pos_graduacao'] ?? '') == 'Intervenções Multidisciplinares para autismo e outras neurodiversidades (SLZ)' ? 'selected' : '' ?>>
+                                            Intervenções Multidisciplinares para autismo e outras neurodiversidades (SLZ)
+                                        </option>
+                                        <option value="Saúde da Mulher (SLZ)" 
+                                            <?= ($rascunho['pos_graduacao'] ?? '') == 'Saúde da Mulher (SLZ)' ? 'selected' : '' ?>>Saúde da Mulher (SLZ)</option>
+                                        <option value="Gestão de redes de Atenção à saúde(SLZ)" 
+                                            <?= ($rascunho['pos_graduacao'] ?? '') == 'Gestão de redes de Atenção à saúde' ? 'selected' : '' ?>>Gestão de redes de Atenção à saúde(SLZ)</option>
+                                    </select>
+                                </div>
+
+                    <!-- Link do Pitch Vídeo 
                     <div class="mb-5">
                         <h4 class="text-primary mb-3">
                             <i class="fas fa-video me-2"></i>Link do Pitch Vídeo
@@ -484,7 +559,7 @@ date_default_timezone_set('America/Sao_Paulo');
                                 <div class="form-text">YouTube, Vimeo ou outra plataforma de vídeo</div>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
 
                     <!-- Upload de Arquivos com Drag & Drop -->
                     <div class="mb-5">
@@ -698,7 +773,7 @@ date_default_timezone_set('America/Sao_Paulo');
                     <?php endif; ?>
 
 
-                    <!-- Programa Gestão em Saúde (PGS) -->
+                    <!-- Programa Gestão em Saúde (PGS) 
                     <div class="mb-5">
                         <h4 class="text-primary mb-3">
                             <i class="fas fa-heartbeat me-2"></i>Questionário de Perfil de Candidato
@@ -750,15 +825,17 @@ date_default_timezone_set('America/Sao_Paulo');
                                 <?php endif; ?>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
 
                     <!-- Botões de Ação -->
-                    <div class="d-flex justify-content-between">
+                      
+                    <div class="d-flex justify-content-center">
+                        <!-- Botões de limpar 
                         <div>
                             <button type="button" class="btn btn-outline-danger" onclick="limparFormulario()">
                                 <i class="fas fa-eraser me-2"></i>Limpar Tudo
                             </button>
-                        </div>
+                        </div>-->
 
                         <button type="submit" name="acao" value="enviar_formulario" class="btn btn-primary btn-lg">
                             <i class="fas fa-paper-plane me-2"></i>Enviar Formulário
@@ -792,6 +869,33 @@ date_default_timezone_set('America/Sao_Paulo');
                         return new bootstrap.Tooltip(tooltipTriggerEl);
                     });
                 });
+            </script>
+
+            <script>
+            // Validação para garantir que pelo menos uma opção em cada grupo seja selecionada
+            document.getElementById('formularioForm').addEventListener('submit', function(e) {
+                const tipoConcorrencia = document.querySelector('input[name="tipo_concorrencia"]:checked');
+                const tipoFuncionario = document.querySelector('input[name="tipo_funcionario"]:checked');
+                const posGraduacao = document.getElementById('pos_graduacao');
+                
+                if (!tipoConcorrencia) {
+                    e.preventDefault();
+                    alert('Por favor, selecione o tipo de concorrência (Ampla Concorrência ou Por Cota)');
+                    return;
+                }
+                
+                if (!tipoFuncionario) {
+                    e.preventDefault();
+                    alert('Por favor, informe se você é funcionário público');
+                    return;
+                }
+                
+                if (!posGraduacao.value) {
+                    e.preventDefault();
+                    alert('Por favor, selecione a pós-graduação desejada');
+                    return;
+                }
+            });
             </script>
 
 
